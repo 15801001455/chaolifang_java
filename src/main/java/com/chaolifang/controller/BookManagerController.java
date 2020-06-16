@@ -19,6 +19,9 @@ public class BookManagerController {
     @Autowired
     private BookManagerService bookManagerService;
 
+    @Autowired
+    private BookManagerService bookManagerService1;
+
     @RequestMapping(value = "/getBookManagerList",method = RequestMethod.POST)
     public DataTablesResult getBookManagerList(@RequestBody BookManagerSearchDTO searchDTO){
         return bookManagerService.getBookManagerList(searchDTO);
