@@ -7,4 +7,4 @@ spring:
     password: root
     driver-class-name: com.mysql.jdbc.Driver
 mybatis:
-  type-aliases-package: com.chaolifang.domain # Õâ¸öÅäÖÃÊÇÎªÁËMapperÎÄ¼şÖĞµÄ×Ô¶¨ÒåÊµÌå²»ÓÃĞ´ÍêÕû°üÃû+ÀàÃû³Æ
+  type-aliases-package: com.chaolifang.domain # è¿™ä¸ªé…ç½®æ˜¯ä¸ºäº†Mapperæ–‡ä»¶ä¸­çš„è‡ªå®šä¹‰å®ä½“ä¸ç”¨å†™å®Œæ•´åŒ…å+ç±»åç§°

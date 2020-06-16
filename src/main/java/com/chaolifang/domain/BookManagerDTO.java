@@ -14,7 +14,7 @@ public class BookManagerDTO {
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date returnTime;
     private String borrowPerson;
-    private String borrowStatus;
+    private Integer borrowStatus;
     private String mark;
     private Date insertTime;
     private Date updateTime;
