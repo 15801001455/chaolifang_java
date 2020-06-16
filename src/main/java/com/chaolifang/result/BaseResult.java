@@ -9,14 +9,18 @@ import java.util.List;
 public class BaseResult implements Serializable {
     public static final String RESULT_OK = "ok";
     public static final String RESULT_NOT_OK = "not_ok";
-    public static final String SUCCESS = "成功操作";
+    public static final String MESSAGE = "成功操作";
 
     private String result;
     private Object data;
-    private String success;
+    private String message;
 
     public static BaseResult ok(Object data) {
-        return createResult(RESULT_OK, data, SUCCESS);
+        return createResult(RESULT_OK, data, MESSAGE);
+    }
+
+    public static BaseResult ok() {
+        return createResult(RESULT_OK, null, MESSAGE);
     }
 
     public static BaseResult notOk(String errorReason) {
@@ -26,14 +30,14 @@ public class BaseResult implements Serializable {
     /**
      * @param result
      * @param data
-     * @param success
+     * @param message
      * @return
      */
-    private static BaseResult createResult(String result, Object data, String success) {
+    private static BaseResult createResult(String result, Object data, String message) {
         BaseResult baseResult = new BaseResult();
         baseResult.setResult(result);
         baseResult.setData(data);
-        baseResult.setSuccess(success);
+        baseResult.setMessage(message);
 
         return baseResult;
     }

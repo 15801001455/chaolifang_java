@@ -2,6 +2,7 @@ package com.chaolifang.controller;
 
 import com.chaolifang.domain.BookManagerDTO;
 import com.chaolifang.dto.BookManagerSearchDTO;
+import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.service.BookManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class BookManagerController {
     }
 
     @RequestMapping(value = "/addBookManager",method = RequestMethod.POST)
-    public int addBookManager(BookManagerDTO dto){
+    public BaseResult addBookManager(@RequestBody BookManagerDTO dto){
         return bookManagerService.addBookManager(dto);
     }
 }
