@@ -7,10 +7,7 @@ import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.service.BookManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +25,10 @@ public class BookManagerController {
     @RequestMapping(value = "/addBookManager",method = RequestMethod.POST)
     public BaseResult addBookManager(@RequestBody BookManagerDTO dto){
         return bookManagerService.addBookManager(dto);
+    }
+
+    @RequestMapping(value = "/deleteBookManager",method = RequestMethod.GET)
+    public BaseResult deleteBookManager(@RequestParam String id){
+        return bookManagerService.deleteBookManager(id);
     }
 }

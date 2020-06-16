@@ -2,10 +2,7 @@ package com.chaolifang.dao;
 
 import com.chaolifang.domain.BookManagerDTO;
 import com.chaolifang.dto.BookManagerSearchDTO;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -59,4 +56,7 @@ public interface BookManagerMapper {
             "</script>"}
     )
     Integer getBookManagerCount(@Param("searchDTO") BookManagerSearchDTO searchDTO);
+
+    @Delete("delete from BookManager where id = #{id}")
+    Integer deleteById(@Param("id") String id);
 }
