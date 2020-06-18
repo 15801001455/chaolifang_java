@@ -54,6 +54,18 @@ public class BookManagerService {
         return BaseResult.notOk("新增书籍失败");
     }
 
+    public BaseResult updateBookManager(BookManagerDTO dto) {
+        BookManagerDTO book = bookManagerMapper.selectById(dto.getId());
+        if(book == null){
+            return BaseResult.notOk("书籍编号不存在");
+        }
+        Integer count = bookManagerMapper.updateBookManager(dto);
+        if(count >= 0){
+            return BaseResult.ok();
+        }
+        return BaseResult.notOk("保存书籍失败");
+    }
+
     public BaseResult deleteBookManager(String id) {
         BookManagerDTO book = bookManagerMapper.selectById(id);
         if(book == null){

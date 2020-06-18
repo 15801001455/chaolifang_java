@@ -27,6 +27,11 @@ public class BookManagerController {
         return bookManagerService.addBookManager(dto);
     }
 
+    @RequestMapping(value = "/updateBookManager",method = RequestMethod.POST)
+    public BaseResult updateBookManager(@RequestBody BookManagerDTO dto){
+        return bookManagerService.updateBookManager(dto);
+    }
+
     @RequestMapping(value = "/deleteBookManager",method = RequestMethod.GET)
     public BaseResult deleteBookManager(@RequestParam String id){
         return bookManagerService.deleteBookManager(id);

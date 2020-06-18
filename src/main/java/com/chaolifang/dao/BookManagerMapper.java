@@ -28,8 +28,11 @@ public interface BookManagerMapper {
     )
     List<BookManagerDTO> getBookManagerList(@Param("searchDTO") BookManagerSearchDTO searchDTO);
 
-    @Insert("insert into BookManager(id,name,mark,borrowStatus) values (#{dto.id},#{dto.name},#{dto.mark},#{dto.borrowStatus})")
+    @Insert("insert into BookManager(id,name,mark,borrowStatus,insertTime) values (#{dto.id},#{dto.name},#{dto.mark},#{dto.borrowStatus},now())")
     Integer addBookManager(@Param("dto") BookManagerDTO dto);
+
+    @Update("update BookManager set name = #{dto.name},mark = #{dto.mark},borrowStatus = #{dto.borrowStatus},borrowPerson = #{dto.borrowPerson},borrowTime = #{dto.borrowTime},returnTime = #{dto.returnTime},updateTime = now() where id = #{dto.id}")
+    Integer updateBookManager(@Param("dto") BookManagerDTO dto);
 
     @Select("select * from BookManager where 1=1 and id = #{id}")
     BookManagerDTO selectById(@Param("id") String id);
