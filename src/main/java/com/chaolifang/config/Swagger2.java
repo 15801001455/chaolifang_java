@@ -31,9 +31,9 @@ public class Swagger2 {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 // 设置页面标题
-                .title("潮立方幼儿园接口站")
+                .title("巢立方幼儿园接口站")
                 // 设置联系人
-                .contact(new Contact("imooc-Nathan", "http://www.imooc.com", "scau_zns@163.com"))
+                .contact(new Contact("金宇川", "http://www.imooc.com", "15801001455@126.com"))
                 // 描述
                 .description("欢迎访问短视频接口文档，这里是描述信息")
                 // 定义版本号
