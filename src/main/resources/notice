@@ -27,4 +27,22 @@
         <artifactId>mybatis-spring-boot-starter</artifactId>
         <version>2.1.3</version>
     </dependency>
-2.
+2.第二步改造 application.yml中的数据库连接串用户名密码加密处理 增加了AESUtil处理类
+   1)AESUtil处理类中加入了Base64处理,就是为了解决 https://blog.csdn.net/kzcming/article/details/80019478
+     看这个类的main方法就可以
+   2)加入pom.xml
+        <dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.11</version>
+		</dependency>
+   3）idea中edit configurations 加入 --mpw.key xiaojin000000016  注意:在idea中都是空格分隔key和value不是=号！
+   4) application.yml文件中 注意mpw开头
+      url: mpw:jRVl8aqpJGl/9STK58AY8PmKwyjVoM6xYHagXukWopsw94qhzFfAsoCLGVffhv0d85v+Cz584qnvgK0jpKfYwPM+iGfb0fa+RJRCkPsX9hc=
+      username: mpw:wtFnsAXFmgsJM7uObQtLjw==
+      password: mpw:wtFnsAXFmgsJM7uObQtLjw==
+   5) 其实我没感觉这样安全多少 开发者还是会看到xiaojin000000016这个原始密钥
+
+3.格式化代码
+Ctrl+Alt+L: 格式化代码
+Ctrl+Alt+O: 删除无用import
