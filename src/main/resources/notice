@@ -1,0 +1,30 @@
+1.第一步改造,加入框架https://mp.baomidou.com/guide/quick-start.html 简化了mybatis的开发
+  只需要三步就可以使用
+  1.pom.xml
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.1.RELEASE</version>
+        <relativePath/>
+    </parent>
+    <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus-boot-starter</artifactId>
+        <version>3.3.2</version>
+    </dependency>
+   2.启动类
+      @MapperScan("com.baomidou.mybatisplus.samples.quickstart.mapper")
+   3.public interface UserMapper extends BaseMapper<User> {
+
+     }
+   4.注意 实体里面也要加入注解
+   @TableName("bookmanager")
+   @TableField("borrowTime")
+   private Date borrowTime;  具体跟数据库中字段一样也要加注解不知道为什么 可能是没有按照建立表的规范(下划线分割)建立表字段
+   5.还有注意的东西 就是用了苞米豆以后pom中貌似不用引入以下
+     <dependency>
+        <groupId>org.mybatis.spring.boot</groupId>
+        <artifactId>mybatis-spring-boot-starter</artifactId>
+        <version>2.1.3</version>
+    </dependency>
+2.

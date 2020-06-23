@@ -1,6 +1,6 @@
 package com.chaolifang.service;
 
-import com.chaolifang.dao.BookManagerMapper;
+import com.chaolifang.dao.BookMapper;
 import com.chaolifang.domain.BookManagerDTO;
 import com.chaolifang.dto.BookManagerSearchDTO;
 import com.chaolifang.enuma.BorrowStatusEnum;
@@ -15,8 +15,9 @@ import java.util.List;
 
 @Service
 public class BookManagerService {
+
     @Autowired
-    private BookManagerMapper bookManagerMapper;
+    private BookMapper bookMapper;
 
     // 目前先不带查询条件
     public DataTablesResult getBookManagerList(BookManagerSearchDTO searchDTO){
@@ -32,8 +33,8 @@ public class BookManagerService {
         if(borrowTimeEnd != null){
             searchDTO.setBorrowTimeEndStr(ToolDate.formatDateByFormat(borrowTimeEnd,"yyyy-MM-dd HH:mm:ss"));
         }
-        Integer count = bookManagerMapper.getBookManagerCount(searchDTO);
-        List<BookManagerDTO> list = bookManagerMapper.getBookManagerList(searchDTO);
+        Integer count = bookMapper.getBookManagerCount(searchDTO);
+        List<BookManagerDTO> list = bookMapper.getBookManagerList(searchDTO);
         DataTablesResult result = new DataTablesResult();
         result.setRecordsTotal(count);
         result.setData(list);
@@ -42,12 +43,12 @@ public class BookManagerService {
     }
 
     public BaseResult addBookManager(BookManagerDTO dto) {
-        BookManagerDTO book = bookManagerMapper.selectById(dto.getId());
+        BookManagerDTO book = bookMapper.selectById(dto.getId());
         if(book != null){
             return BaseResult.notOk("书籍编号重复");
         }
         dto.setBorrowStatus(BorrowStatusEnum.未出借.getIndex());
-        Integer count = bookManagerMapper.addBookManager(dto);
+        int count = bookMapper.insert(dto);
         if(count >= 0){
             return BaseResult.ok();
         }
@@ -55,11 +56,12 @@ public class BookManagerService {
     }
 
     public BaseResult updateBookManager(BookManagerDTO dto) {
-        BookManagerDTO book = bookManagerMapper.selectById(dto.getId());
+        BookManagerDTO book = bookMapper.selectById(dto.getId());
         if(book == null){
             return BaseResult.notOk("书籍编号不存在");
         }
-        Integer count = bookManagerMapper.updateBookManager(dto);
+        dto.setUpdateTime(new Date());
+        Integer count = bookMapper.updateById(dto);
         if(count >= 0){
             return BaseResult.ok();
         }
@@ -67,7 +69,7 @@ public class BookManagerService {
     }
 
     public BaseResult deleteBookManager(String id) {
-        BookManagerDTO book = bookManagerMapper.selectById(id);
+        BookManagerDTO book = bookMapper.selectById(id);
         if(book == null){
             return BaseResult.notOk("书籍不存在");
         }
@@ -78,7 +80,7 @@ public class BookManagerService {
         if(BorrowStatusEnum.已出借.getIndex() == borrowStatus){
             return BaseResult.notOk("书籍已经借阅,无法删除,借阅人:" + book.getBorrowPerson());
         }
-        Integer count = bookManagerMapper.deleteById(id);
+        Integer count = bookMapper.deleteById(id);
         if(count >= 0){
             return BaseResult.ok();
         }
