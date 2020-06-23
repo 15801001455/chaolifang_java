@@ -5,9 +5,12 @@ spring:
     #url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
     #username: root
     #password: root
-    url: mpw:jRVl8aqpJGl/9STK58AY8PmKwyjVoM6xYHagXukWopsw94qhzFfAsoCLGVffhv0d85v+Cz584qnvgK0jpKfYwPM+iGfb0fa+RJRCkPsX9hc=
-    username: mpw:wtFnsAXFmgsJM7uObQtLjw==
-    password: mpw:wtFnsAXFmgsJM7uObQtLjw==
+    url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
+    username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+    password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
     driver-class-name: com.mysql.jdbc.Driver
+jasypt:
+  encryptor:
+    password: PWDSalt
 mybatis:
   type-aliases-package: com.chaolifang.domain # 这个配置是为了Mapper文件中的自定义实体不用写完整包名+类名称

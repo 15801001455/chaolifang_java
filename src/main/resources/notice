@@ -36,13 +36,46 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.11</version>
 		</dependency>
-   3）idea中edit configurations 加入 --mpw.key xiaojin000000016  注意:在idea中都是空格分隔key和value不是=号！
+   3）idea中edit configurations 加入 --mpw.key xiaojin000000016  注意:在idea中都是空格分隔key和value不是=号！打成jar包以后参数应该是--mpw.key=xiaojin000000016，是=号连接的
    4) application.yml文件中 注意mpw开头
       url: mpw:jRVl8aqpJGl/9STK58AY8PmKwyjVoM6xYHagXukWopsw94qhzFfAsoCLGVffhv0d85v+Cz584qnvgK0jpKfYwPM+iGfb0fa+RJRCkPsX9hc=
       username: mpw:wtFnsAXFmgsJM7uObQtLjw==
       password: mpw:wtFnsAXFmgsJM7uObQtLjw==
    5) 其实我没感觉这样安全多少 开发者还是会看到xiaojin000000016这个原始密钥
-
-3.格式化代码
+   注意：这种方式没有任何意义，因为开发者会看到原始密钥，已经找到了一种非常好的方式进行加盐处理，只有你自己知道连接数据库的用户名和密码！！！！！！！
+         操作步骤如下：
+         1）pom中加入
+             <dependency>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-spring-boot-starter</artifactId>
+                <version>2.1.0</version>
+            </dependency>
+         2）去maven的仓库目录: G:\software\apache-maven-3.6.1\repo\org\jasypt\jasypt\1.9.2 执行一下命令
+             java -cp jasypt-1.9.2.jar org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI input="root" password=PWDSalt algorithm=PBEWithMD5AndDES
+             注意input="root",root就是原始密码 password=PWDSalt就是盐值,执行后OUTPUT就是最终的密码,这个密码每次执行都会变,但是我们随便知道一个就行
+             ----ENVIRONMENT-----------------
+             Runtime: Oracle Corporation Java HotSpot(TM) 64-Bit Server VM 25.211-b12
+             ----ARGUMENTS-------------------
+             algorithm: PBEWithMD5AndDES
+             input: root
+             password: PWDSalt
+             ----OUTPUT----------------------
+             sH49bUekqrZ28g6ArMyvVQ==
+        3）application.yml中加入如下配置
+                   spring:
+                     datasource:
+                       #url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
+                       #username: root
+                       #password: root
+                       url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
+                       username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+                       password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+                       driver-class-name: com.mysql.jdbc.Driver
+                   jasypt:
+                     encryptor:
+                       password: PWDSalt
+3.
+-----------------------------------------------------------------------------------------
+300.格式化代码
 Ctrl+Alt+L: 格式化代码
 Ctrl+Alt+O: 删除无用import
