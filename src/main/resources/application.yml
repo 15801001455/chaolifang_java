@@ -23,11 +23,11 @@ spring:
           username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
           password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
           driver-class-name: com.mysql.jdbc.Driver
-        master_bak: # 纯粹为了演示多个数据源测试用
-          url: jdbc:mysql://127.0.0.1:3306/chaolifang_backup?characterEncoding=utf8&useSSL=false
-          username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
-          password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
-          driver-class-name: com.mysql.jdbc.Driver
+        #master_bak: # 纯粹为了演示多个数据源测试用 已经把库删除了情况下加这个配置会报错,先注释掉
+          #  url: jdbc:mysql://127.0.0.1:3306/chaolifang_backup?characterEncoding=utf8&useSSL=false
+          #username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+          #password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+          #driver-class-name: com.mysql.jdbc.Driver
 jasypt:
   encryptor:
     password: PWDSalt
