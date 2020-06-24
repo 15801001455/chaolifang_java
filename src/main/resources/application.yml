@@ -1,14 +1,33 @@
 server:
   port: 8083
 spring:
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   datasource:
-    #url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
-    #username: root
-    #password: root
-    url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
-    username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
-    password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
-    driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      stat-view-servlet:
+        enabled: true
+        loginUsername: admin
+        loginPassword: 123456
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
+      druid: #以下是全局默认值，可以全局更改
+        initial-size: 50
+        max-active: 50
+        min-idle: 5
+        max-wait: 2000
+      datasource: #以下是多数据源配置
+        master:
+          url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
+          username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+          password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+          driver-class-name: com.mysql.jdbc.Driver
+        master_bak: # 纯粹为了演示多个数据源测试用
+          url: jdbc:mysql://127.0.0.1:3306/chaolifang_backup?characterEncoding=utf8&useSSL=false
+          username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+          password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+          driver-class-name: com.mysql.jdbc.Driver
 jasypt:
   encryptor:
     password: PWDSalt

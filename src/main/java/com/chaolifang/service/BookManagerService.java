@@ -1,5 +1,6 @@
 package com.chaolifang.service;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.chaolifang.dao.BookMapper;
 import com.chaolifang.domain.BookManagerDTO;
 import com.chaolifang.dto.BookManagerSearchDTO;
@@ -42,6 +43,7 @@ public class BookManagerService {
         return result;
     }
 
+    //@DS("master_bak")  测试动态切换数据源
     public BaseResult addBookManager(BookManagerDTO dto) {
         BookManagerDTO book = bookMapper.selectById(dto.getId());
         if(book != null){

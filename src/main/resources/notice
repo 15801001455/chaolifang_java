@@ -64,9 +64,6 @@
         3）application.yml中加入如下配置
                    spring:
                      datasource:
-                       #url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
-                       #username: root
-                       #password: root
                        url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
                        username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
                        password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
@@ -74,7 +71,52 @@
                    jasypt:
                      encryptor:
                        password: PWDSalt
-3.
+3.把项目整体改造成多数据源并且使用druid数据源
+    1.      <!-- 数据源 -->
+      		<dependency>
+      			<groupId>com.alibaba</groupId>
+      			<artifactId>druid-spring-boot-starter</artifactId>
+      			<version>1.1.22</version>
+      		</dependency>
+      		<!-- 暴力豆动态数据源 -->
+      		<dependency>
+      			<groupId>com.baomidou</groupId>
+      			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+      			<version>3.1.1</version>
+      		</dependency>
+    2.启动类
+       @SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)
+    3.yml文件
+      spring:
+        autoconfigure:
+          exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
+        datasource:
+          druid:
+            stat-view-servlet:
+              enabled: true
+              loginUsername: admin
+              loginPassword: 123456
+          dynamic:
+            primary: master #设置默认的数据源或者数据源组,默认值即为master
+            strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
+            druid: #以下是全局默认值，可以全局更改
+              initial-size: 50
+              max-active: 50
+              min-idle: 5
+              max-wait: 2000
+            datasource: #以下是多数据源配置
+              master:
+                url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
+                username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+                password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+                driver-class-name: com.mysql.jdbc.Driver
+              master_bak: # 纯粹为了演示多个数据源测试用
+                        url: jdbc:mysql://127.0.0.1:3306/chaolifang_backup?characterEncoding=utf8&useSSL=false
+                        username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+                        password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
+                        driver-class-name: com.mysql.jdbc.Driver
+     4.调参数参考文档：https://github.com/baomidou/dynamic-datasource-spring-boot-starter/wiki/Integration-With-Druid
+     5.具体使用：@DS 可以注解在方法上和类上，同时存在方法注解优先于类上注解。强烈建议只注解在service实现上
 -----------------------------------------------------------------------------------------
 300.格式化代码
 Ctrl+Alt+L: 格式化代码
