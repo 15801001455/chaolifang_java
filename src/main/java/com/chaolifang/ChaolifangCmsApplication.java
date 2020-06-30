@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.chaolifang.dao")
 public class ChaolifangCmsApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ChaolifangCmsApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ChaolifangCmsApplication.class, args);
+    }
 
 }

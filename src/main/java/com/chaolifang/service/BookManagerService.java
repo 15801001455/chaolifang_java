@@ -1,6 +1,8 @@
 package com.chaolifang.service;
 
+import com.alibaba.druid.util.DruidDataSourceUtils;
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.chaolifang.dao.BookMapper;
 import com.chaolifang.domain.BookManagerDTO;
 import com.chaolifang.dto.BookManagerSearchDTO;
@@ -10,6 +12,7 @@ import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.util.ToolDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -21,18 +24,18 @@ public class BookManagerService {
     private BookMapper bookMapper;
 
     // 目前先不带查询条件
-    public DataTablesResult getBookManagerList(BookManagerSearchDTO searchDTO){
+    public DataTablesResult getBookManagerList(BookManagerSearchDTO searchDTO) {
         Integer pageIndex = searchDTO.getPageIndex() == null ? 1 : searchDTO.getPageIndex();
         Integer pageSize = searchDTO.getPageSize() == null ? 10 : searchDTO.getPageSize();
-        searchDTO.setPageIndex((pageIndex-1) * pageSize); // mysql中是起始的行是多少行
+        searchDTO.setPageIndex((pageIndex - 1) * pageSize); // mysql中是起始的行是多少行
         searchDTO.setPageSize(pageSize);
         Date borrowTimeStart = searchDTO.getBorrowTimeStart();
         Date borrowTimeEnd = searchDTO.getBorrowTimeEnd();
-        if(borrowTimeStart != null){
-            searchDTO.setBorrowTimeStartStr(ToolDate.formatDateByFormat(borrowTimeStart,"yyyy-MM-dd HH:mm:ss"));
+        if (borrowTimeStart != null) {
+            searchDTO.setBorrowTimeStartStr(ToolDate.formatDateByFormat(borrowTimeStart, "yyyy-MM-dd HH:mm:ss"));
         }
-        if(borrowTimeEnd != null){
-            searchDTO.setBorrowTimeEndStr(ToolDate.formatDateByFormat(borrowTimeEnd,"yyyy-MM-dd HH:mm:ss"));
+        if (borrowTimeEnd != null) {
+            searchDTO.setBorrowTimeEndStr(ToolDate.formatDateByFormat(borrowTimeEnd, "yyyy-MM-dd HH:mm:ss"));
         }
         Integer count = bookMapper.getBookManagerCount(searchDTO);
         List<BookManagerDTO> list = bookMapper.getBookManagerList(searchDTO);
@@ -43,28 +46,50 @@ public class BookManagerService {
         return result;
     }
 
-    //@DS("master_bak")  测试动态切换数据源
+    //@DS("slave")  //测试动态切换数据源
+    @Transactional // 加了事务注解后即使出现运行期异常(比如1/0)，数据也不会插入数据库
     public BaseResult addBookManager(BookManagerDTO dto) {
         BookManagerDTO book = bookMapper.selectById(dto.getId());
-        if(book != null){
+        if (book != null) {
             return BaseResult.notOk("书籍编号重复");
         }
         dto.setBorrowStatus(BorrowStatusEnum.未出借.getIndex());
         int count = bookMapper.insert(dto);
-        if(count >= 0){
+        /** service内部切换数据源 全部试验失败了
+        DynamicDataSourceContextHolder.clear();
+        DynamicDataSourceContextHolder.push("master");
+        **/
+        if (count >= 0) {
             return BaseResult.ok();
         }
         return BaseResult.notOk("新增书籍失败");
     }
 
+    /*@DS("master")  //测试动态切换数据源
+    @Transactional
+    public BaseResult addBookInsideServiceTest(BookManagerDTO dto) {
+        DynamicDataSourceContextHolder.push("master");
+        BookManagerDTO book = bookMapper.selectById(dto.getId());
+        if (book != null) {
+            return BaseResult.notOk("书籍编号重复");
+        }
+        dto.setBorrowStatus(BorrowStatusEnum.未出借.getIndex());
+        int count = bookMapper.insert(dto);
+        //System.out.println(1/0);
+        if (count >= 0) {
+            return BaseResult.ok();
+        }
+        return BaseResult.notOk("新增书籍失败");
+    }*/
+
     public BaseResult updateBookManager(BookManagerDTO dto) {
         BookManagerDTO book = bookMapper.selectById(dto.getId());
-        if(book == null){
+        if (book == null) {
             return BaseResult.notOk("书籍编号不存在");
         }
         dto.setUpdateTime(new Date());
         Integer count = bookMapper.updateById(dto);
-        if(count >= 0){
+        if (count >= 0) {
             return BaseResult.ok();
         }
         return BaseResult.notOk("保存书籍失败");
@@ -72,18 +97,18 @@ public class BookManagerService {
 
     public BaseResult deleteBookManager(String id) {
         BookManagerDTO book = bookMapper.selectById(id);
-        if(book == null){
+        if (book == null) {
             return BaseResult.notOk("书籍不存在");
         }
         Integer borrowStatus = book.getBorrowStatus();
-        if(borrowStatus == null){
+        if (borrowStatus == null) {
             return BaseResult.notOk("书籍借阅状态没有,请联系管理员");
         }
-        if(BorrowStatusEnum.已出借.getIndex() == borrowStatus){
+        if (BorrowStatusEnum.已出借.getIndex() == borrowStatus) {
             return BaseResult.notOk("书籍已经借阅,无法删除,借阅人:" + book.getBorrowPerson());
         }
         Integer count = bookMapper.deleteById(id);
-        if(count >= 0){
+        if (count >= 0) {
             return BaseResult.ok();
         }
         return BaseResult.notOk("删除失败");

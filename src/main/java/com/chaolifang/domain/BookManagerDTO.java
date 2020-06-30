@@ -24,7 +24,7 @@ public class BookManagerDTO {
     private Integer borrowStatus;
     private String mark;
     @TableField("insertTime")
-    private Date insertTime;
+    private Date insertTime = new Date();
     @TableField("updateTime")
     private Date updateTime;
 }

@@ -1,12 +1,12 @@
 package com.chaolifang.dao;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chaolifang.domain.BookManagerDTO;
 import com.chaolifang.dto.BookManagerSearchDTO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
-
 public interface BookMapper extends BaseMapper<BookManagerDTO> {
         @Select({"<script>",
                 "select * from BookManager where 1=1 " ,
