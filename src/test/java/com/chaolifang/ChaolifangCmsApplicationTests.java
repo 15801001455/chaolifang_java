@@ -8,6 +8,7 @@ class ChaolifangCmsApplicationTests {
 
 	@Test
 	void contextLoads() {
+		System.out.println("会启动整个项目");
 	}
 
 }

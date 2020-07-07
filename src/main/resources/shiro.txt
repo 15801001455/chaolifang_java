@@ -1,0 +1,12 @@
+When the login method is called, the SecurityManager will receive the AuthenticationToken and dispatch it to one or more configured Realms to allow each to perform authentication checks as required
+
+Some examples of permissions:
+	Open a file
+	View the ‘/user/list’ web page
+	Print documents
+	Delete the ‘jsmith’ user
+
+多个realm的时候要特殊处理(ModularRealmAuthenticator)，
+但是一般项目只会有一个realm，所以我们为了实现巢立方项目的验证功能先不考虑那么复杂
+
+但是要考虑一个问题,就是登录密码的加密
