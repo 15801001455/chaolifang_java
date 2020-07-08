@@ -1,15 +1,14 @@
 package com.chaolifang.dao;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.chaolifang.domain.BookManagerDTO;
-import com.chaolifang.dto.BookManagerSearchDTO;
+import com.chaolifang.domain.Book;
+import com.chaolifang.dto.BookSearchDTO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
-public interface BookMapper extends BaseMapper<BookManagerDTO> {
+public interface BookMapper extends BaseMapper<Book> {
         @Select({"<script>",
-                "select * from BookManager where 1=1 " ,
+                "select * from t_book where 1=1 " ,
                 " <if test='searchDTO.borrowTimeStartStr != null and searchDTO.borrowTimeStartStr.length > 0'>" ,
                 " and borrowTime &gt;= #{searchDTO.borrowTimeStartStr} "  ,
                 "</if> " ,
@@ -25,7 +24,7 @@ public interface BookMapper extends BaseMapper<BookManagerDTO> {
                 " limit #{searchDTO.pageIndex},#{searchDTO.pageSize}",
                 "</script>"}
         )
-        List<BookManagerDTO> getBookManagerList(@Param("searchDTO") BookManagerSearchDTO searchDTO);
+        List<Book> getBookManagerList(@Param("searchDTO") BookSearchDTO searchDTO);
 
         /**
          * @Param("searchDTO") 这个注解必须加上
@@ -33,7 +32,7 @@ public interface BookMapper extends BaseMapper<BookManagerDTO> {
          * @return
          */
         @Select({"<script>",
-                "select count(*) from BookManager where 1=1 " ,
+                "select count(*) from t_book where 1=1 " ,
                 " <if test='searchDTO.borrowTimeStartStr != null and searchDTO.borrowTimeStartStr.length > 0'>" ,
                 " and borrowTime &gt;= #{searchDTO.borrowTimeStartStr} "  ,
                 "</if> " ,
@@ -48,5 +47,5 @@ public interface BookMapper extends BaseMapper<BookManagerDTO> {
                 "</if> " ,
                 "</script>"}
         )
-        Integer getBookManagerCount(@Param("searchDTO") BookManagerSearchDTO searchDTO);
+        Integer getBookManagerCount(@Param("searchDTO") BookSearchDTO searchDTO);
 }

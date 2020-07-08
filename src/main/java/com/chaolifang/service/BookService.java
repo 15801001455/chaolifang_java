@@ -1,11 +1,8 @@
 package com.chaolifang.service;
 
-import com.alibaba.druid.util.DruidDataSourceUtils;
-import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.chaolifang.dao.BookMapper;
-import com.chaolifang.domain.BookManagerDTO;
-import com.chaolifang.dto.BookManagerSearchDTO;
+import com.chaolifang.domain.Book;
+import com.chaolifang.dto.BookSearchDTO;
 import com.chaolifang.enuma.BorrowStatusEnum;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
@@ -18,13 +15,13 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class BookManagerService {
+public class BookService {
 
     @Autowired
     private BookMapper bookMapper;
 
     // 目前先不带查询条件
-    public DataTablesResult getBookManagerList(BookManagerSearchDTO searchDTO) {
+    public DataTablesResult getBookList(BookSearchDTO searchDTO) {
         Integer pageIndex = searchDTO.getPageIndex() == null ? 1 : searchDTO.getPageIndex();
         Integer pageSize = searchDTO.getPageSize() == null ? 10 : searchDTO.getPageSize();
         searchDTO.setPageIndex((pageIndex - 1) * pageSize); // mysql中是起始的行是多少行
@@ -38,7 +35,7 @@ public class BookManagerService {
             searchDTO.setBorrowTimeEndStr(ToolDate.formatDateByFormat(borrowTimeEnd, "yyyy-MM-dd HH:mm:ss"));
         }
         Integer count = bookMapper.getBookManagerCount(searchDTO);
-        List<BookManagerDTO> list = bookMapper.getBookManagerList(searchDTO);
+        List<Book> list = bookMapper.getBookManagerList(searchDTO);
         DataTablesResult result = new DataTablesResult();
         result.setRecordsTotal(count);
         result.setData(list);
@@ -48,8 +45,8 @@ public class BookManagerService {
 
     //@DS("slave")  //测试动态切换数据源
     @Transactional // 加了事务注解后即使出现运行期异常(比如1/0)，数据也不会插入数据库
-    public BaseResult addBookManager(BookManagerDTO dto) {
-        BookManagerDTO book = bookMapper.selectById(dto.getId());
+    public BaseResult addBook(Book dto) {
+        Book book = bookMapper.selectById(dto.getId());
         if (book != null) {
             return BaseResult.notOk("书籍编号重复");
         }
@@ -82,8 +79,8 @@ public class BookManagerService {
         return BaseResult.notOk("新增书籍失败");
     }*/
 
-    public BaseResult updateBookManager(BookManagerDTO dto) {
-        BookManagerDTO book = bookMapper.selectById(dto.getId());
+    public BaseResult updateBook(Book dto) {
+        Book book = bookMapper.selectById(dto.getId());
         if (book == null) {
             return BaseResult.notOk("书籍编号不存在");
         }
@@ -95,8 +92,8 @@ public class BookManagerService {
         return BaseResult.notOk("保存书籍失败");
     }
 
-    public BaseResult deleteBookManager(String id) {
-        BookManagerDTO book = bookMapper.selectById(id);
+    public BaseResult deleteBook(String id) {
+        Book book = bookMapper.selectById(id);
         if (book == null) {
             return BaseResult.notOk("书籍不存在");
         }

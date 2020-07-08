@@ -8,6 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 
+/**
+ * mongo中的book对象
+ */
 @Data
 @Document(collection = "book")
 public class Book {

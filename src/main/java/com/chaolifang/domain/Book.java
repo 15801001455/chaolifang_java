@@ -8,8 +8,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("bookmanager")
-public class BookManagerDTO {
+@TableName("t_book")
+public class Book {
     private String id;
     private String name;
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")

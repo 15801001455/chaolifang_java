@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class BookManagerSearchDTO {
+public class BookSearchDTO {
     private Integer pageIndex; // 当前是第几页
     private Integer pageSize;  // 每页显示多少条
     private Date borrowTimeStart;
