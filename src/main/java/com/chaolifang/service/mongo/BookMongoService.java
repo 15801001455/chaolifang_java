@@ -1,72 +1,89 @@
 package com.chaolifang.service.mongo;
 
-import com.chaolifang.dao.BookMapper;
 import com.chaolifang.dto.BookSearchDTO;
 import com.chaolifang.enuma.BorrowStatusEnum;
-import com.chaolifang.mongo.document.Book;
+import com.chaolifang.mongo.document.BookMongo;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.util.ToolDate;
 import com.mongodb.client.result.DeleteResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
-public class BookService {
+public class BookMongoService {
 
     @Autowired
     private MongoTemplate bookMapper;
 
-    // 目前先不带查询条件
-    /*public DataTablesResult getBookList(BookSearchDTO searchDTO) {
+    public DataTablesResult getBookList(BookSearchDTO searchDTO) {
         Integer pageIndex = searchDTO.getPageIndex() == null ? 1 : searchDTO.getPageIndex();
         Integer pageSize = searchDTO.getPageSize() == null ? 10 : searchDTO.getPageSize();
         searchDTO.setPageIndex((pageIndex - 1) * pageSize); // mysql中是起始的行是多少行
         searchDTO.setPageSize(pageSize);
         Date borrowTimeStart = searchDTO.getBorrowTimeStart();
         Date borrowTimeEnd = searchDTO.getBorrowTimeEnd();
+        Criteria criteria = new Criteria();
+        List<Criteria> conditionList = new ArrayList<>();
         if (borrowTimeStart != null) {
-            searchDTO.setBorrowTimeStartStr(ToolDate.formatDateByFormat(borrowTimeStart, "yyyy-MM-dd HH:mm:ss"));
+            conditionList.add(Criteria.where("borrowTime").exists(true).gte(ToolDate.formatDateByFormat(borrowTimeStart, "yyyy-MM-dd HH:mm:ss")));
         }
         if (borrowTimeEnd != null) {
-            searchDTO.setBorrowTimeEndStr(ToolDate.formatDateByFormat(borrowTimeEnd, "yyyy-MM-dd HH:mm:ss"));
+            conditionList.add(Criteria.where("borrowTime").exists(true).lte(ToolDate.formatDateByFormat(borrowTimeEnd, "yyyy-MM-dd HH:mm:ss")));
         }
-        Integer count = bookMapper.getBookManagerCount(searchDTO);
-        List<Book> list = bookMapper.getBookManagerList(searchDTO);
+        String borrowPerson = searchDTO.getBorrowPerson();
+        if(borrowPerson != null && !"".equals(borrowPerson)){
+            conditionList.add(Criteria.where("borrowPerson").exists(true).regex(borrowPerson));
+        }
+        Integer borrowStatus = searchDTO.getBorrowStatus();
+        if(borrowStatus != null && borrowStatus > 0){
+            conditionList.add(Criteria.where("borrowStatus").is(borrowStatus));
+        }
+        if(conditionList.size() > 0){
+            criteria.andOperator(conditionList.toArray(new Criteria[0]));
+        }
+        Pageable pageable = PageRequest.of(pageIndex-1, pageSize);
+        long count = bookMapper.count(Query.query(criteria),BookMongo.class);
+        List<BookMongo> list = bookMapper.find(Query.query(criteria).with(pageable),BookMongo.class);
         DataTablesResult result = new DataTablesResult();
-        result.setRecordsTotal(count);
+        result.setRecordsTotal(Integer.valueOf(count + ""));
         result.setData(list);
         result.setResult("ok");
         return result;
-    }*/
+    }
 
     @Transactional // 加了事务注解后即使出现运行期异常(比如1/0)，数据也不会插入数据库
-    public BaseResult addBook(Book dto) {
-        Book book = bookMapper.findById(dto.getId(), Book.class);
+    public BaseResult addBook(BookMongo dto) {
+        BookMongo book = bookMapper.findById(dto.getId(), BookMongo.class);
         if (book != null) {
             return BaseResult.notOk("书籍编号重复");
         }
         dto.setBorrowStatus(BorrowStatusEnum.未出借.getIndex());
-        Book count = bookMapper.insert(dto);
+        BookMongo count = bookMapper.insert(dto);
         if (count != null) {
             return BaseResult.ok();
         }
         return BaseResult.notOk("新增书籍失败");
     }
 
-    public BaseResult updateBook(Book dto) {
-        Book book = bookMapper.findById(dto.getId(),Book.class);
+    public BaseResult updateBook(BookMongo dto) {
+        BookMongo book = bookMapper.findById(dto.getId(), BookMongo.class);
         if (book == null) {
             return BaseResult.notOk("书籍编号不存在");
         }
         dto.setUpdateTime(new Date());
         // 这里能看出来insert和save的区别了 但是不知道insertTime会不会又更新了 可以试试一会儿
-        Book save = bookMapper.save(dto);
+        BookMongo save = bookMapper.save(dto);
         //Integer count = bookMapper.updateById(dto);
         if (save != null) {
             return BaseResult.ok();
@@ -75,7 +92,7 @@ public class BookService {
     }
 
     public BaseResult deleteBook(String id) {
-        Book book = bookMapper.findById(id,Book.class);
+        BookMongo book = bookMapper.findById(id, BookMongo.class);
         if (book == null) {
             return BaseResult.notOk("书籍不存在");
         }

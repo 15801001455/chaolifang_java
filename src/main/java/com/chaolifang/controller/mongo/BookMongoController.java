@@ -1,32 +1,31 @@
 package com.chaolifang.controller.mongo;
 
-import com.chaolifang.domain.Book;
 import com.chaolifang.dto.BookSearchDTO;
+import com.chaolifang.mongo.document.BookMongo;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
-import com.chaolifang.service.mongo.BookService;
+import com.chaolifang.service.mongo.BookMongoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@RestController("BookMongoController")
 @RequestMapping(value = "/api/mongo/book")
-public class BookController {
+public class BookMongoController {
     @Autowired
-    private BookService bookService;
+    private BookMongoService bookService;
 
     @RequestMapping(value = "/getBookList",method = RequestMethod.POST)
-    //@RequiresAuthentication
     public DataTablesResult getBookList(@RequestBody BookSearchDTO searchDTO){
         return bookService.getBookList(searchDTO);
     }
 
     @RequestMapping(value = "/addBook",method = RequestMethod.POST)
-    public BaseResult addBook(@RequestBody Book dto){
+    public BaseResult addBook(@RequestBody BookMongo dto){
         return bookService.addBook(dto);
     }
 
     @RequestMapping(value = "/updateBook",method = RequestMethod.POST)
-    public BaseResult updateBook(@RequestBody Book dto){
+    public BaseResult updateBook(@RequestBody BookMongo dto){
         return bookService.updateBook(dto);
     }
 

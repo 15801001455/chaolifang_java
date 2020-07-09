@@ -1,6 +1,6 @@
 package com.chaolifang;
 
-import com.chaolifang.mongo.document.Book;
+import com.chaolifang.mongo.document.BookMongo;
 import com.chaolifang.util.ToolDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,16 +28,16 @@ public class MongoTests {
 
     @Test
     void testDropBook() {
-        mongoTemplate.dropCollection(Book.class);
+        mongoTemplate.dropCollection(BookMongo.class);
     }
 
     @Test
     void testInsertBook() {
         for (int i = 0; i < 20; i++) {
-            Book book = new Book();
+            BookMongo book = new BookMongo();
             book.setId(i + "");
             book.setName("儿歌" + i);
-            Book insert = mongoTemplate.insert(book);
+            BookMongo insert = mongoTemplate.insert(book);
         }
     }
 
@@ -49,17 +49,17 @@ public class MongoTests {
         //List<Book> books = mongoTemplate.find(Query.query(Criteria.where("name").regex("儿歌")), Book.class);
         //分页查找 PageRequest.of(page, size); 注意第一页的话page是0 第二页page传1
         Pageable pageable = PageRequest.of(1, 10);
-        List<Book> books = mongoTemplate.find(Query.query(Criteria.where("name").regex("儿歌")).with(pageable), Book.class);
+        List<BookMongo> books = mongoTemplate.find(Query.query(Criteria.where("name").regex("儿歌")).with(pageable), BookMongo.class);
         //根据id查询的话下面两种都能查出来数据 _id或者id
         //List<Book> books = mongoTemplate.find(Query.query(Criteria.where("_id").is("1")), Book.class);
         //List<Book> books = mongoTemplate.find(Query.query(Criteria.where("id").is("1")), Book.class);
         //就和mysql中查询总数用
-        long count = mongoTemplate.count(Query.query(Criteria.where("name").regex("儿歌")),Book.class);
+        long count = mongoTemplate.count(Query.query(Criteria.where("name").regex("儿歌")), BookMongo.class);
         System.out.println("查询条件总数:" + count);
-        for (Book book : books) {
+        for (BookMongo book : books) {
             System.out.println(book.getId() + "," + book.getName() + "," + ToolDate.formatDateByFormat(book.getInsertTime(), "yyyy-MM-dd HH:mm:ss"));
         }
-        Page<Book> page = new PageImpl(books, pageable, count);
+        Page<BookMongo> page = new PageImpl(books, pageable, count);
 
     }
 
@@ -69,8 +69,8 @@ public class MongoTests {
     @Test
     void findAllAndRemove() {
         Query query = new Query();
-        List<Book> books = mongoTemplate.findAllAndRemove(query, Book.class);
-        for (Book book : books) {
+        List<BookMongo> books = mongoTemplate.findAllAndRemove(query, BookMongo.class);
+        for (BookMongo book : books) {
             System.out.println(book.getId() + "," + book.getName() + "," + ToolDate.formatDateByFormat(book.getInsertTime(), "yyyy-MM-dd HH:mm:ss"));
         }
     }

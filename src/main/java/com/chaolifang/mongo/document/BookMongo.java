@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Data
 @Document(collection = "book")
-public class Book {
+public class BookMongo {
     private String id;
     private String name;
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
