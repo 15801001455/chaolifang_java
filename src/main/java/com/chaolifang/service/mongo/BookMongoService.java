@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,23 +35,28 @@ public class BookMongoService {
         Date borrowTimeStart = searchDTO.getBorrowTimeStart();
         Date borrowTimeEnd = searchDTO.getBorrowTimeEnd();
         Criteria criteria = new Criteria();
-        List<Criteria> conditionList = new ArrayList<>();
-        if (borrowTimeStart != null) {
-            conditionList.add(Criteria.where("borrowTime").exists(true).gte(ToolDate.formatDateByFormat(borrowTimeStart, "yyyy-MM-dd HH:mm:ss")));
+
+
+        /*if (borrowTimeStart != null) {
+            criteria.andOperator(Criteria.where("borrowTime").gte(ToolDate.formatDateByFormat(borrowTimeStart, "yyyy-MM-dd") + " 00:00:00"),
+                    Criteria.where("borrowTime").lte(ToolDate.formatDateByFormat(borrowTimeEnd, "yyyy-MM-dd") + " 23:59:59"));
+        }*/
+        if(borrowTimeStart != null && borrowTimeEnd != null){
+            criteria.and("borrowTime").gte(ToolDate.parseDate(ToolDate.formatDateByFormat(borrowTimeStart, "yyyy-MM-dd") + " 00:00:00","yyyy-MM-dd HH:mm:ss"))
+            .lte(ToolDate.parseDate(ToolDate.formatDateByFormat(borrowTimeEnd, "yyyy-MM-dd") + " 23:59:59","yyyy-MM-dd HH:mm:ss"));
+        }else if(borrowTimeStart != null && borrowTimeEnd == null){
+            criteria.and("borrowTime").gte(ToolDate.parseDate(ToolDate.formatDateByFormat(borrowTimeStart, "yyyy-MM-dd") + " 00:00:00","yyyy-MM-dd HH:mm:ss"));
+        }else if(borrowTimeStart == null && borrowTimeEnd != null){
+            criteria.and("borrowTime").lte(ToolDate.parseDate(ToolDate.formatDateByFormat(borrowTimeEnd, "yyyy-MM-dd") + " 23:59:59","yyyy-MM-dd HH:mm:ss"));
         }
-        if (borrowTimeEnd != null) {
-            conditionList.add(Criteria.where("borrowTime").exists(true).lte(ToolDate.formatDateByFormat(borrowTimeEnd, "yyyy-MM-dd HH:mm:ss")));
-        }
+
         String borrowPerson = searchDTO.getBorrowPerson();
         if(borrowPerson != null && !"".equals(borrowPerson)){
-            conditionList.add(Criteria.where("borrowPerson").exists(true).regex(borrowPerson));
+            criteria.and("borrowPerson").regex(borrowPerson);
         }
         Integer borrowStatus = searchDTO.getBorrowStatus();
         if(borrowStatus != null && borrowStatus > 0){
-            conditionList.add(Criteria.where("borrowStatus").is(borrowStatus));
-        }
-        if(conditionList.size() > 0){
-            criteria.andOperator(conditionList.toArray(new Criteria[0]));
+            criteria.and("borrowStatus").is(borrowStatus);
         }
         Pageable pageable = PageRequest.of(pageIndex-1, pageSize);
         long count = bookMapper.count(Query.query(criteria),BookMongo.class);
