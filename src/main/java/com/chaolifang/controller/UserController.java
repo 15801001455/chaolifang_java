@@ -24,6 +24,13 @@ public class UserController {
         return BaseResult.ok();
     }
 
+    /*@GetMapping("/login")
+    public BaseResult login(){
+        User user = new User();
+        BaseResult login = login(user);
+        return login;
+    }*/
+
     @PostMapping("/login")
     public BaseResult login(@RequestBody User user){
         Subject subject = SecurityUtils.getSubject();

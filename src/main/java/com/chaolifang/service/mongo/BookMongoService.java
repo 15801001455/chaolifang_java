@@ -109,7 +109,7 @@ public class BookMongoService {
         if (BorrowStatusEnum.已出借.getIndex() == borrowStatus) {
             return BaseResult.notOk("书籍已经借阅,无法删除,借阅人:" + book.getBorrowPerson());
         }
-        DeleteResult remove = bookMapper.remove(id);
+        DeleteResult remove = bookMapper.remove(book);
         if (remove.getDeletedCount() >= 0) {
             return BaseResult.ok();
         }
