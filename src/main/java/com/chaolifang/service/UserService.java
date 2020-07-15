@@ -21,6 +21,7 @@ public class UserService {
      */
     public User getUserByName(String name){
         User user = new User();
+        user.setId("1");
         user.setUsername("admin");
         user.setPassword("123");
         Map<String,User> userMap = new HashMap<>();

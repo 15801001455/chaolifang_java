@@ -2,11 +2,14 @@ package com.chaolifang.service.mongo;
 
 import com.chaolifang.dto.BookSearchDTO;
 import com.chaolifang.enuma.BorrowStatusEnum;
+import com.chaolifang.mongo.document.BookLogMongo;
 import com.chaolifang.mongo.document.BookMongo;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.util.ToolDate;
 import com.mongodb.client.result.DeleteResult;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +38,7 @@ public class BookMongoService {
         Date borrowTimeStart = searchDTO.getBorrowTimeStart();
         Date borrowTimeEnd = searchDTO.getBorrowTimeEnd();
         Criteria criteria = new Criteria();
-
+        criteria.and("isDel").is(1);
 
         /*if (borrowTimeStart != null) {
             criteria.andOperator(Criteria.where("borrowTime").gte(ToolDate.formatDateByFormat(borrowTimeStart, "yyyy-MM-dd") + " 00:00:00"),
@@ -70,13 +73,27 @@ public class BookMongoService {
 
     @Transactional // 加了事务注解后即使出现运行期异常(比如1/0)，数据也不会插入数据库
     public BaseResult addBook(BookMongo dto) {
-        BookMongo book = bookMapper.findById(dto.getId(), BookMongo.class);
+        String id = dto.getId();
+        if(StringUtils.isEmpty(id)){
+            return BaseResult.notOk("书籍编号不能为空");
+        }
+        BookMongo book = bookMapper.findById(id, BookMongo.class);
         if (book != null) {
             return BaseResult.notOk("书籍编号重复");
         }
         dto.setBorrowStatus(BorrowStatusEnum.未出借.getIndex());
         BookMongo count = bookMapper.insert(dto);
-        if (count != null) {
+
+        // 插入日志 现在是不知道谁插入的数据
+        Subject subject = SecurityUtils.getSubject();
+        String userName = subject.getPrincipal().toString();
+        BookLogMongo bookLogMongo = new BookLogMongo();
+        bookLogMongo.setUserid("1");
+        bookLogMongo.setUsername(userName);
+        bookLogMongo.setComment("初始化录入书籍");
+        bookLogMongo.setBookId(id);
+        BookLogMongo bookLogInsert = bookMapper.insert(bookLogMongo);
+        if (count != null && bookLogInsert != null) {
             return BaseResult.ok();
         }
         return BaseResult.notOk("新增书籍失败");
@@ -87,11 +104,33 @@ public class BookMongoService {
         if (book == null) {
             return BaseResult.notOk("书籍编号不存在");
         }
+        Integer borrowStatus = dto.getBorrowStatus();
+        if(borrowStatus == BorrowStatusEnum.已出借.getIndex()){
+            String borrowPerson = dto.getBorrowPerson();
+            if(StringUtils.isEmpty(borrowPerson)){
+                return BaseResult.notOk("请填写借阅人");
+            }
+        }
+        Date borrowTime = dto.getBorrowTime();
+        Date returnTime = dto.getReturnTime();
+        if(borrowTime.compareTo(returnTime) > 0){
+            return BaseResult.notOk("借阅时间不能大于归还时间");
+        }
         dto.setUpdateTime(new Date());
         // 这里能看出来insert和save的区别了 但是不知道insertTime会不会又更新了 可以试试一会儿
         BookMongo save = bookMapper.save(dto);
-        //Integer count = bookMapper.updateById(dto);
-        if (save != null) {
+        // 插入日志 现在是不知道谁插入的数据
+        Subject subject = SecurityUtils.getSubject();
+        String userName = subject.getPrincipal().toString();
+        BookLogMongo bookLogMongo = new BookLogMongo();
+        bookLogMongo.setUserid("1");
+        bookLogMongo.setUsername(userName);
+        //操作日志 操作人id:userid,操作人姓名:username,
+        String comment = save.toString();
+        bookLogMongo.setComment(comment);
+        bookLogMongo.setBookId(dto.getId());
+        BookLogMongo bookLogInsert = bookMapper.insert(bookLogMongo);
+        if (save != null && bookLogInsert != null) {
             return BaseResult.ok();
         }
         return BaseResult.notOk("保存书籍失败");
@@ -109,8 +148,10 @@ public class BookMongoService {
         if (BorrowStatusEnum.已出借.getIndex() == borrowStatus) {
             return BaseResult.notOk("书籍已经借阅,无法删除,借阅人:" + book.getBorrowPerson());
         }
-        DeleteResult remove = bookMapper.remove(book);
-        if (remove.getDeletedCount() >= 0) {
+        book.setIsDel(9);//伪删除数据
+        book.setUpdateTime(new Date());
+        BookMongo save = bookMapper.save(book);
+        if (save != null) {
             return BaseResult.ok();
         }
         return BaseResult.notOk("删除失败");

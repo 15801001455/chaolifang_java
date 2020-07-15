@@ -3,6 +3,7 @@ package com.chaolifang.mongo.document;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -12,6 +13,7 @@ import java.util.Date;
  * mongo中的book对象
  */
 @Data
+@ToString
 @Document(collection = "book")
 public class BookMongo {
     private String id;
@@ -31,4 +33,6 @@ public class BookMongo {
     private Date insertTime = new Date();
     @Field("updateTime")
     private Date updateTime;
+    @Field("isDel")
+    private Integer isDel = 1; // 9代表删除
 }
