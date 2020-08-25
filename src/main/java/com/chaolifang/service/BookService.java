@@ -1,9 +1,8 @@
 package com.chaolifang.service;
-
-import com.chaolifang.dao.BookMapper;
-import com.chaolifang.domain.Book;
 import com.chaolifang.dto.BookSearchDTO;
 import com.chaolifang.enuma.BorrowStatusEnum;
+import com.chaolifang.mapper.BookMapper;
+import com.chaolifang.pojo.Book;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.util.ToolDate;
@@ -43,7 +42,6 @@ public class BookService {
         return result;
     }
 
-    //@DS("slave")  //测试动态切换数据源
     @Transactional // 加了事务注解后即使出现运行期异常(比如1/0)，数据也不会插入数据库
     public BaseResult addBook(Book dto) {
         Book book = bookMapper.selectById(dto.getId());
@@ -52,32 +50,11 @@ public class BookService {
         }
         dto.setBorrowStatus(BorrowStatusEnum.未出借.getIndex());
         int count = bookMapper.insert(dto);
-        /** service内部切换数据源 全部试验失败了
-        DynamicDataSourceContextHolder.clear();
-        DynamicDataSourceContextHolder.push("master");
-        **/
         if (count >= 0) {
             return BaseResult.ok();
         }
         return BaseResult.notOk("新增书籍失败");
     }
-
-    /*@DS("master")  //测试动态切换数据源
-    @Transactional
-    public BaseResult addBookInsideServiceTest(BookManagerDTO dto) {
-        DynamicDataSourceContextHolder.push("master");
-        BookManagerDTO book = bookMapper.selectById(dto.getId());
-        if (book != null) {
-            return BaseResult.notOk("书籍编号重复");
-        }
-        dto.setBorrowStatus(BorrowStatusEnum.未出借.getIndex());
-        int count = bookMapper.insert(dto);
-        //System.out.println(1/0);
-        if (count >= 0) {
-            return BaseResult.ok();
-        }
-        return BaseResult.notOk("新增书籍失败");
-    }*/
 
     public BaseResult updateBook(Book dto) {
         Book book = bookMapper.selectById(dto.getId());

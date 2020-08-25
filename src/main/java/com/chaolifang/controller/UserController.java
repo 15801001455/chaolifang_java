@@ -1,21 +1,19 @@
 package com.chaolifang.controller;
 
-import com.chaolifang.domain.User;
 import com.chaolifang.result.BaseResult;
-import com.chaolifang.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-    @Autowired
-    private UserService userService;
 
     @GetMapping("/logout")
     public BaseResult logout(){
@@ -23,18 +21,10 @@ public class UserController {
         subject.logout();
         return BaseResult.ok();
     }
-
-    /*@GetMapping("/login")
-    public BaseResult login(){
-        User user = new User();
-        BaseResult login = login(user);
-        return login;
-    }*/
-
     @PostMapping("/login")
-    public BaseResult login(@RequestBody User user){
+    public BaseResult login(){
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(),user.getPassword());
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("admin","admin");
         try {
             subject.login(usernamePasswordToken);
         }catch (AuthenticationException e){
@@ -44,7 +34,7 @@ public class UserController {
             e.printStackTrace();
             return BaseResult.notOk("没有权限");
         }
-        return BaseResult.ok(user.getUsername());
+        return BaseResult.ok("admin");
     }
 
 

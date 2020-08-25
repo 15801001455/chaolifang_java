@@ -124,15 +124,10 @@ public class AESUtil {
 
     public static void main(String[] args) throws Exception {
         String origin = "xiaojin000000016";
-        String url = "jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false";
         String username = "root";
-        String password = "root";
-        String encrypt = aesEncrypt(url, origin);
         String encryptusername = aesEncrypt(username, origin);
-        System.out.println(encrypt);
         System.out.println(encryptusername);
-        // 解密
-        String decrypt = aesDecrypt(encrypt, origin);
-        System.out.println(decrypt);
+        String s = aesDecrypt(encryptusername, origin);
+        System.out.println(s);
     }
 }

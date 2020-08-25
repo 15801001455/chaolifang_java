@@ -1,6 +1,8 @@
 server:
   port: 8083
 spring:
+  application:
+    name: jta-dbsource
   data:
     mongodb:
       host: 127.0.0.1
@@ -29,30 +31,75 @@ spring:
     exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   datasource:
     druid:
-      stat-view-servlet:
+      mydbone:
+        url: jdbc:mysql://localhost:3306/mydbone?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&pinGlobalTxToPhysicalConnection=true&autoReconnect=true
+        username: root
+        password: root
+        driver-class-name: com.mysql.jdbc.Driver
+        # 初始化时建立物理连接的个数。初始化发生在显示调用 init 方法，或者第一次 getConnection 时
+        initialSize: 5
+        # 最小连接池数量
+        minIdle: 5
+        # 最大连接池数量
+        maxActive: 10
+        # 获取连接时最大等待时间，单位毫秒。配置了 maxWait 之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置 useUnfairLock 属性为 true 使用非公平锁。
+        maxWait: 60000
+        # Destroy 线程会检测连接的间隔时间，如果连接空闲时间大于等于 minEvictableIdleTimeMillis 则关闭物理连接。
+        timeBetweenEvictionRunsMillis: 60000
+        # 连接保持空闲而不被驱逐的最小时间
+        minEvictableIdleTimeMillis: 300000
+        # 用来检测连接是否有效的 sql 因数据库方言而异, 例如 oracle 应该写成 SELECT 1 FROM DUAL
+        validationQuery: SELECT 1
+        # 建议配置为 true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于 timeBetweenEvictionRunsMillis，执行 validationQuery 检测连接是否有效。
+        testWhileIdle: true
+        # 申请连接时执行 validationQuery 检测连接是否有效，做了这个配置会降低性能。
+        testOnBorrow: false
+        # 归还连接时执行 validationQuery 检测连接是否有效，做了这个配置会降低性能。
+        testOnReturn: false
+        # 是否自动回收超时连接
+        removeAbandoned: true
+        # 超时时间 (以秒数为单位)
+        remove-abandoned-timeout: 1800
+        logAbandoned: true
+        pinGlobalTxToPhysicalConnection: true
+
+      mydbtwo:
+        url: jdbc:mysql://localhost:3306/mydbtwo?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&pinGlobalTxToPhysicalConnection=true&autoReconnect=true
+        username: root
+        password: root
+        driver-class-name: com.mysql.jdbc.Driver
+        initialSize: 6
+        minIdle: 6
+        maxActive: 10
+        maxWait: 60000
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 1
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        removeAbandoned: true
+        remove-abandoned-timeout: 1800
+        logAbandoned: true
+        pinGlobalTxToPhysicalConnection: true
+      # WebStatFilter 用于采集 web-jdbc 关联监控的数据。
+      web-stat-filter:
+        # 是否开启 WebStatFilter 默认是 true
         enabled: true
-        loginUsername: admin
-        loginPassword: 123456
-    dynamic:
-      primary: master #设置默认的数据源或者数据源组,默认值即为master
-      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
-      druid: #以下是全局默认值，可以全局更改
-        initial-size: 50
-        max-active: 50
-        min-idle: 5
-        max-wait: 2000
-        keep-alive: true
-      datasource: #以下是多数据源配置
-        master:
-          url: jdbc:mysql://127.0.0.1:3306/chaolifang?characterEncoding=utf8&useSSL=false
-          username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
-          password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
-          driver-class-name: com.mysql.jdbc.Driver
-        slave: # 纯粹为了演示多个数据源测试用 已经把库删除了情况下加这个配置会报错,先注释掉
-          url: jdbc:mysql://127.0.0.1:3306/chaolifang_backup?characterEncoding=utf8&useSSL=false
-          username: ENC(sH49bUekqrZ28g6ArMyvVQ==)
-          password: ENC(sH49bUekqrZ28g6ArMyvVQ==)
-          driver-class-name: com.mysql.jdbc.Driver
+        # 需要拦截的 url
+        url-pattern: /*
+        # 排除静态资源的请求
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+      # Druid 内置提供了一个 StatViewServlet 用于展示 Druid 的统计信息。
+      stat-view-servlet:
+        #是否启用 StatViewServlet 默认值 true
+        enabled: true
+        # 需要拦截的 url
+        url-pattern: /druid/*
+        # 允许清空统计数据
+        reset-enable: true
+        login-username: myname
+        login-password: mypwd
 jasypt:
   encryptor:
     password: PWDSalt

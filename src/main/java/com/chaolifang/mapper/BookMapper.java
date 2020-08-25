@@ -1,12 +1,18 @@
-package com.chaolifang.dao;
+package com.chaolifang.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.chaolifang.domain.Book;
 import com.chaolifang.dto.BookSearchDTO;
-import org.apache.ibatis.annotations.*;
+import com.chaolifang.pojo.Book;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
-public interface BookMapper extends BaseMapper<Book> {
+
+public interface BookMapper{
+
+        int insert(Book book);
+
+        Book selectById(String id);
+
         @Select({"<script>",
                 "select * from t_book where 1=1 " ,
                 " <if test='searchDTO.borrowTimeStartStr != null and searchDTO.borrowTimeStartStr.length > 0'>" ,
@@ -48,4 +54,8 @@ public interface BookMapper extends BaseMapper<Book> {
                 "</script>"}
         )
         Integer getBookManagerCount(@Param("searchDTO") BookSearchDTO searchDTO);
+
+        Integer updateById(Book dto);
+
+        Integer deleteById(String id);
 }

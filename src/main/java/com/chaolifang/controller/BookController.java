@@ -1,7 +1,7 @@
 package com.chaolifang.controller;
 
-import com.chaolifang.domain.Book;
 import com.chaolifang.dto.BookSearchDTO;
+import com.chaolifang.pojo.Book;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.service.BookService;
@@ -16,7 +16,6 @@ public class BookController {
     private BookService bookService;
 
     @RequestMapping(value = "/getBookList",method = RequestMethod.POST)
-    //@RequiresAuthentication
     public DataTablesResult getBookList(@RequestBody BookSearchDTO searchDTO){
         return bookService.getBookList(searchDTO);
     }
