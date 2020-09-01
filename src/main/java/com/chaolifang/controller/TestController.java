@@ -31,4 +31,37 @@ public class TestController {
         }
         return "ok";
     }
+
+    @GetMapping("/testInsertTwo")
+    @Transactional
+    public String testInsertTwo() throws Exception{
+        User user = new User();
+        user.setUsername("testUserTwo");
+        user.setAge(10);
+        try{
+            testJtaService.testInsertUser2(user);
+            int num = 1/0;
+        }catch (Exception e){
+            System.out.println("触发事务回滚");
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return "ok";
+    }
+
+    @GetMapping("/testInsert")
+    @Transactional
+    public String testInsert() throws Exception{
+        User user = new User();
+        user.setUsername("testUser");
+        user.setAge(10);
+        try{
+            testJtaService.testInsertUser(user);
+            testJtaService.testInsertUser2(user);
+            int num = 1/0;  //能够保证不同的库一起回滚
+        }catch (Exception e){
+            System.out.println("触发事务回滚");
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return "ok";
+    }
 }

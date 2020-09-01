@@ -1,0 +1,2 @@
+{"id":"10.2.69.175.tm159894179327500001","wasCommitted":true,"participants":[{"uri":"10.2.69.175.tm1","state":"COMMITTING","expires":1598941804357,"resourceName":"mydbone"},{"uri":"10.2.69.175.tm2","state":"COMMITTING","expires":1598941804357,"resourceName":"mydbtwo"}]}
+{"id":"10.2.69.175.tm159894179327500001","wasCommitted":true,"participants":[{"uri":"10.2.69.175.tm1","state":"TERMINATED","expires":1598941804432,"resourceName":"mydbone"},{"uri":"10.2.69.175.tm2","state":"TERMINATED","expires":1598941804432,"resourceName":"mydbtwo"}]}

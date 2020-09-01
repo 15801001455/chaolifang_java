@@ -8,6 +8,10 @@ import com.chaolifang.service.TestJtaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * 发现吗？这个项目service层都没有transaction注解!!都是在controller层面
+ * https://blog.csdn.net/qq_35387940/article/details/103474353
+ */
 @Service
 public class TestJtaServiceImpl implements TestJtaService {
 
