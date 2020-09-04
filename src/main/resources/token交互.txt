@@ -1,0 +1,2 @@
+现在这个项目用token进行前后台交互的话，用swagger就没办法设置header了，因为是从请求的request.getParameter和request.getHeader获取的，
+可以看下Swagger2.java中的改动，增加header信息，这样在swagger界面就可以录入header信息了

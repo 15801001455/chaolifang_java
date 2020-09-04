@@ -43,8 +43,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/test")
-    public BaseResult test(String token){
+    @GetMapping("/test")
+    public BaseResult test(@RequestParam("mytoken") String token){
         return BaseResult.ok("恭喜你,验证通过了，我可以返回数据给你");
     }
 }
