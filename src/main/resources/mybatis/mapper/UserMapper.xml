@@ -3,10 +3,22 @@
 <mapper namespace="com.chaolifang.mapper.UserMapper">
 
     <sql id="Base_Column_List">
-        id,username,age
+        id,name,username,password,token,expireTime,loginTime
     </sql>
 
     <insert id="insert" parameterType="com.chaolifang.pojo.User">
-        insert into User(username,age) values (#{username},#{age})
+        insert into User(username,password,token,loginTime,expireTime) values (#{username},#{password},#{token},#{loginTime},#{expireTime})
     </insert>
+
+    <update id="update">
+        update User set username = #{username},password = #{passowrd},token = #{token},loginTime = #{loginTime},expireTime = #{expireTime} where id = #{id}
+    </update>
+
+    <select id="findByUsername" parameterType="java.lang.String" resultType="com.chaolifang.pojo.User">
+        select * from User where username = #{username}
+    </select>
+
+    <select id="findByToken" resultType="com.chaolifang.pojo.User">
+        select * from User where token = #{token}
+    </select>
 </mapper>

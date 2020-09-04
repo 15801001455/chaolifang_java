@@ -1,41 +1,50 @@
 package com.chaolifang.controller;
 
+import com.chaolifang.dto.LoginDTO;
+import com.chaolifang.dto.TokenVO;
+import com.chaolifang.pojo.User;
 import com.chaolifang.result.BaseResult;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.subject.Subject;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.chaolifang.service.AuthService;
+import com.chaolifang.util.TokenUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
+    @Autowired
+    private AuthService authService;
+
     @GetMapping("/logout")
-    public BaseResult logout(){
-        Subject subject = SecurityUtils.getSubject();
-        subject.logout();
+    public BaseResult logout(HttpServletRequest request){
+        //从request中取出token
+        String token = TokenUtil.getRequestToken(request);
+        authService.logout(token);
         return BaseResult.ok();
     }
     @PostMapping("/login")
-    public BaseResult login(){
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("admin","admin");
-        try {
-            subject.login(usernamePasswordToken);
-        }catch (AuthenticationException e){
-            e.printStackTrace();
+    public BaseResult login(@RequestBody LoginDTO loginDTO){
+        String username = loginDTO.getUsername();
+        String password = loginDTO.getPassword();
+        //用户信息
+        User user = authService.findByUsername(username);
+        //账号不存在,密码错误
+        if(user == null || !user.getPassword().equals(password)){
             return BaseResult.notOk("账户或者密码错误");
-        }catch(AuthorizationException e){
-            e.printStackTrace();
-            return BaseResult.notOk("没有权限");
+        }else{
+            //生成token,并保存到数据库
+            String token = authService.createToken(user);
+            TokenVO tokenVO = new TokenVO();
+            tokenVO.setToken(token);
+            return BaseResult.ok(token);
         }
-        return BaseResult.ok("admin");
     }
 
-
+    @PostMapping("/test")
+    public BaseResult test(String token){
+        return BaseResult.ok("恭喜你,验证通过了，我可以返回数据给你");
+    }
 }

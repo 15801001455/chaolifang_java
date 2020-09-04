@@ -21,7 +21,7 @@ public class TestController {
     public String testInsertOne() throws Exception {
         User user = new User();
         user.setUsername("testUserOne");
-        user.setAge(10);
+        user.setPassword("10");
         try {
             testJtaService.testInsertUser(user);
         } catch (Exception e) {
@@ -37,7 +37,7 @@ public class TestController {
     public String testInsertTwo() throws Exception{
         User user = new User();
         user.setUsername("testUserTwo");
-        user.setAge(10);
+        user.setPassword("10");
         try{
             testJtaService.testInsertUser2(user);
             int num = 1/0;
@@ -53,7 +53,7 @@ public class TestController {
     public String testInsert() throws Exception{
         User user = new User();
         user.setUsername("testUser");
-        user.setAge(10);
+        user.setPassword("10");
         try{
             testJtaService.testInsertUser(user);
             testJtaService.testInsertUser2(user);
