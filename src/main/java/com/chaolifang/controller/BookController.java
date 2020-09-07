@@ -6,6 +6,8 @@ import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,9 +21,15 @@ public class BookController {
         return bookService.getBookList(searchDTO);
     }
 
+    @Transactional
     @RequestMapping(value = "/addBook",method = RequestMethod.POST)
     public BaseResult addBook(@RequestBody Book dto){
-        return bookService.addBook(dto);
+        try{
+            return bookService.addBook(dto);
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return BaseResult.notOk(e.getMessage());
+        }
     }
 
     @RequestMapping(value = "/updateBook",method = RequestMethod.POST)

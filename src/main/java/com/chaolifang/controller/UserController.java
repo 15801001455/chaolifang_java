@@ -6,10 +6,12 @@ import com.chaolifang.pojo.User;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.service.AuthService;
 import com.chaolifang.util.TokenUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/user")
@@ -36,11 +38,35 @@ public class UserController {
             return BaseResult.notOk("账户或者密码错误");
         }else{
             //生成token,并保存到数据库
-            String token = authService.createToken(user);
-            TokenVO tokenVO = new TokenVO();
-            tokenVO.setToken(token);
-            return BaseResult.ok(token);
+            User token = authService.createToken(user);
+            //TokenVO tokenVO = new TokenVO();
+            //tokenVO.setToken(token.getToken());
+            //tokenVO.setExpireTime(token.getExpireTime());
+            return BaseResult.ok(token.getToken());
         }
+    }
+
+    /**
+     * 这个方法真的是无奈之举,如果不提前调用接口验证登录信息的话，通过拦截器验证的话，会造成返回接口调用信息400，还没有什么好的方法解决
+     * @param token
+     * @return
+     */
+    @GetMapping("/validateToken")
+    public BaseResult validateToken(@RequestParam("mytoken") String token){
+        if (StringUtils.isBlank(token)) {
+            return BaseResult.notOk("用户未登录，请先登录");
+        }
+        //1. 根据token，查询用户信息
+        User userEntity = authService.findByToken(token);
+        //2. 若用户不存在,
+        if (userEntity == null) {
+            return BaseResult.notOk("用户不存在");
+        }
+        //3. token失效
+        if (userEntity.getExpireTime().isBefore(LocalDateTime.now())) {
+            return BaseResult.notOk("用户登录凭证已失效，请重新登录");
+        }
+        return BaseResult.ok();
     }
 
     @GetMapping("/test")

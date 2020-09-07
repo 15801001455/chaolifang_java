@@ -32,6 +32,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
         List<String> patterns = new ArrayList<>();//需要拦截的请求
         patterns.add("/api/user/test");
+        patterns.add("/api/book/**");
         //patterns.add("/api/user/login");
         registry.addInterceptor(authInterceptor).addPathPatterns(patterns);
     }

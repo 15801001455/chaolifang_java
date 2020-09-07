@@ -2,16 +2,21 @@ package com.chaolifang.mapper;
 
 import com.chaolifang.dto.BookSearchDTO;
 import com.chaolifang.pojo.Book;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 public interface BookMapper{
+        /**
+         * 添加书籍
+         * @param book
+         * @return
+         */
+        @Insert("insert into t_book(id,name,borrowStatus,mark,insertTime) values (#{book.id},#{book.name},1,#{book.mark},#{book.insertTime})")
+        int insert(@Param("book") Book book);
 
-        int insert(Book book);
-
-        Book selectById(String id);
+        @Select("select * from t_book where id = #{id}")
+        Book selectById(@Param("id") String id);
 
         @Select({"<script>",
                 "select * from t_book where 1=1 " ,
@@ -55,7 +60,9 @@ public interface BookMapper{
         )
         Integer getBookManagerCount(@Param("searchDTO") BookSearchDTO searchDTO);
 
-        Integer updateById(Book dto);
+        @Update("update t_book set name = #{book.name},borrowTime = #{book.borrowTime},returnTime = #{book.returnTime},borrowPerson = #{book.borrowPerson},borrowStatus = #{book.borrowStatus},mark = #{book.mark},updateTime = #{book.updateTime} where id = #{book.id}")
+        Integer updateById(@Param("book") Book book);
 
-        Integer deleteById(String id);
+        @Delete("delete from t_book where id = #{id}")
+        Integer deleteById(@Param("id") String id);
 }

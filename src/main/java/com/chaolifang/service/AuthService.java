@@ -15,7 +15,7 @@ public interface AuthService {
      * @param user
      * @return
      */
-    String createToken(User user);
+    User createToken(User user);
 
     /**
      * 根据token去修改用户token ，使原本token失效

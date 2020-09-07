@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @ToString
 public class Book {
-    private String id;
+    private String id;//书籍编号
     private String name;
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date borrowTime;

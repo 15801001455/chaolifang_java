@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String createToken(User user) {
+    public User createToken(User user) {
         //用UUID生成token
         String token = UUID.randomUUID().toString();
         //当前时间
@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
         }else{
             userMapper.update(user);
         }
-        return token;
+        return user;
     }
 
     @Override

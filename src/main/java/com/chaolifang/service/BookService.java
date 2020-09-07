@@ -42,7 +42,6 @@ public class BookService {
         return result;
     }
 
-    @Transactional // 加了事务注解后即使出现运行期异常(比如1/0)，数据也不会插入数据库
     public BaseResult addBook(Book dto) {
         Book book = bookMapper.selectById(dto.getId());
         if (book != null) {
