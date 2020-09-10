@@ -27,6 +27,12 @@ public class AuthInterceptor implements HandlerInterceptor {
     private AuthService authService;
 
     @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        // 这里很关键 每个完整的请求链(请求接口)结束后，要把当前线程的用户信息移除map，否则内存溢出
+        UserContext.removeUser();
+    }
+
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
             String token = TokenUtil.getRequestToken(request);
