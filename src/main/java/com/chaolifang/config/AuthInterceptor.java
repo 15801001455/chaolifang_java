@@ -1,6 +1,8 @@
 package com.chaolifang.config;
 
 import com.alibaba.fastjson.JSON;
+import com.chaolifang.config.context.CurrentUserInfo;
+import com.chaolifang.config.context.UserContext;
 import com.chaolifang.pojo.User;
 import com.chaolifang.service.AuthService;
 import com.chaolifang.util.HttpContextUtil;
@@ -8,6 +10,7 @@ import com.chaolifang.util.Result;
 import com.chaolifang.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -32,17 +35,21 @@ public class AuthInterceptor implements HandlerInterceptor {
                 return false;
             }
             //1. 根据token，查询用户信息
-            User userEntity = authService.findByToken(token);
+            User user = authService.findByToken(token);
             //2. 若用户不存在,
-            if (userEntity == null) {
+            if (user == null) {
                 //setReturn(response, 400, "用户不存在");
                 return false;
             }
             //3. token失效
-            if (userEntity.getExpireTime().isBefore(LocalDateTime.now())) {
+            if (user.getExpireTime().isBefore(LocalDateTime.now())) {
                 //setReturn(response, 400, "用户登录凭证已失效，请重新登录");
                 return false;
             }
+            CurrentUserInfo info = new CurrentUserInfo();
+            BeanUtils.copyProperties(user,info);
+            //这里在当前线程里设置用户的信息，是为了以后使用方便,这个拦截器每个请求能进来的都会设置上User信息,前提是请求需要登录操作才会进入这个拦截器才会设置上上下文信息
+            UserContext.setUser(info);
         }
         return true;
     }

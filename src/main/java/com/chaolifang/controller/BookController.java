@@ -1,5 +1,7 @@
 package com.chaolifang.controller;
 
+import com.chaolifang.config.context.CurrentUserInfo;
+import com.chaolifang.config.context.UserContext;
 import com.chaolifang.dto.BookSearchDTO;
 import com.chaolifang.pojo.Book;
 import com.chaolifang.result.BaseResult;
@@ -24,6 +26,7 @@ public class BookController {
     @Transactional
     @RequestMapping(value = "/addBook",method = RequestMethod.POST)
     public BaseResult addBook(@RequestBody Book dto){
+        CurrentUserInfo user = UserContext.getUser();//这行就是测试拦截器里能否为需要登录的用户设置上当前的用户信息
         try{
             return bookService.addBook(dto);
         }catch (Exception e){
