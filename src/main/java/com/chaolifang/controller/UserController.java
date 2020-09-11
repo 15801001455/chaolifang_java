@@ -1,10 +1,10 @@
 package com.chaolifang.controller;
 
 import com.chaolifang.dto.LoginDTO;
-import com.chaolifang.dto.TokenVO;
 import com.chaolifang.pojo.User;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.service.AuthService;
+import com.chaolifang.util.EncryptedUtil;
 import com.chaolifang.util.TokenUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +34,11 @@ public class UserController {
         //用户信息
         User user = authService.findByUsername(username);
         //账号不存在,密码错误
-        if(user == null || !user.getPassword().equals(password)){
+        if(user == null || !user.getPassword().equals(EncryptedUtil.generate(password,username))){//username就d当成盐值用了
             return BaseResult.notOk("账户或者密码错误");
         }else{
             //生成token,并保存到数据库
             User token = authService.createToken(user);
-            //TokenVO tokenVO = new TokenVO();
-            //tokenVO.setToken(token.getToken());
-            //tokenVO.setExpireTime(token.getExpireTime());
             return BaseResult.ok(token.getToken());
         }
     }
