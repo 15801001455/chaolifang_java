@@ -1,6 +1,8 @@
 package com.chaolifang.controller;
 
+import com.chaolifang.config.context.CurrentRole;
 import com.chaolifang.dto.LoginDTO;
+import com.chaolifang.pojo.Role;
 import com.chaolifang.pojo.User;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.service.AuthService;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -39,6 +42,11 @@ public class UserController {
         }else{
             //生成token,并保存到数据库
             User token = authService.createToken(user);
+            Integer userId = user.getId();
+            Role currentRole = authService.findRoleByUserId(userId);
+            if(currentRole == null){
+                return BaseResult.notOk("用户无角色,无法登录系统");
+            }
             return BaseResult.ok(token.getToken());
         }
     }
@@ -54,14 +62,19 @@ public class UserController {
             return BaseResult.notOk("用户未登录，请先登录");
         }
         //1. 根据token，查询用户信息
-        User userEntity = authService.findByToken(token);
+        User user = authService.findByToken(token);
         //2. 若用户不存在,
-        if (userEntity == null) {
+        if (user == null) {
             return BaseResult.notOk("用户不存在");
         }
         //3. token失效
-        if (userEntity.getExpireTime().isBefore(LocalDateTime.now())) {
+        if (user.getExpireTime().isBefore(LocalDateTime.now())) {
             return BaseResult.notOk("用户登录凭证已失效，请重新登录");
+        }
+        //4 用户没有角色应该也不能登录系统
+        Role roleByUserId = authService.findRoleByUserId(user.getId());
+        if(roleByUserId == null){
+            return BaseResult.notOk("用户没有角色信息，请联系管理员");
         }
         return BaseResult.ok();
     }

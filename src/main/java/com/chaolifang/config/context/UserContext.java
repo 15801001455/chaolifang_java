@@ -1,49 +1,51 @@
 package com.chaolifang.config.context;
 
+import java.util.List;
+
 /**
  * 用户上下文
  *
  * @author zhousongbai
  */
 public class UserContext {
-    private static ThreadLocal<CurrentUserInfo> currentUserInfoThreadLocal = new ThreadLocal<>();
-    private static ThreadLocal<CurrentRole> currentUserRoleThreadLocal = new ThreadLocal<>();
-    private static ThreadLocal<CurrentGroup> currentUserGroupThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<CurrentUserInfo> currentUser = new ThreadLocal<>();
+    private static ThreadLocal<CurrentRole> currentRole = new ThreadLocal<>();//当前正在使用的角色
+    private static ThreadLocal<List<CurrentAuth>> currentAuthList = new ThreadLocal<>();//当前角色对应的权限列表
 
     public static void setUser(CurrentUserInfo userInfo) {
-        currentUserInfoThreadLocal.set(userInfo);
+        currentUser.set(userInfo);
     }
 
     public static CurrentUserInfo getUser() {
-        return currentUserInfoThreadLocal.get();
+        return currentUser.get();
     }
 
     public static void removeUser() {
-        currentUserInfoThreadLocal.remove();
+        currentUser.remove();
     }
 
 
-    public static void setUserRole(CurrentRole userRole) {
-        currentUserRoleThreadLocal.set(userRole);
+    public static void setCurrentRole(CurrentRole userRole) {
+        currentRole.set(userRole);
     }
 
-    public static CurrentRole getUserRole() {
-        return currentUserRoleThreadLocal.get();
+    public static CurrentRole getCurrentRole() {
+        return currentRole.get();
     }
 
-    public static void removeUserRole() {
-        currentUserRoleThreadLocal.remove();
+    public static void removeCurrentRole() {
+        currentRole.remove();
     }
 
-    public static void setUserGroup(CurrentGroup group) {
-        currentUserGroupThreadLocal.set(group);
+    public static void setCurrentAuthList(List<CurrentAuth> auth) {
+        currentAuthList.set(auth);
     }
 
-    public static CurrentGroup getUserGroup() {
-        return currentUserGroupThreadLocal.get();
+    public static List<CurrentAuth> getCurrentAuthList() {
+        return currentAuthList.get();
     }
 
-    public static void removeUserGroup() {
-        currentUserGroupThreadLocal.remove();
+    public static void removeCurrentAuthList() {
+        currentAuthList.remove();
     }
 }

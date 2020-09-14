@@ -7,18 +7,37 @@
     </sql>
 
     <insert id="insert" parameterType="com.chaolifang.pojo.User">
-        insert into User(username,password,token,loginTime,expireTime) values (#{username},#{password},#{token},#{loginTime},#{expireTime})
+        insert into t_user(username,password,token,loginTime,expireTime) values (#{username},#{password},#{token},#{loginTime},#{expireTime})
     </insert>
 
     <update id="update">
-        update User set username = #{username},password = #{password},token = #{token},loginTime = #{loginTime},expireTime = #{expireTime} where id = #{id}
+        update t_user set username = #{username},password = #{password},token = #{token},loginTime = #{loginTime},expireTime = #{expireTime} where id = #{id}
     </update>
 
     <select id="findByUsername" parameterType="java.lang.String" resultType="com.chaolifang.pojo.User">
-        select * from User where username = #{username}
+        select * from t_user where username = #{username}
     </select>
 
     <select id="findByToken" resultType="com.chaolifang.pojo.User">
-        select * from User where token = #{token}
+        select * from t_user where token = #{token}
+    </select>
+
+    <!--这个目前用不到,还没做单用户多角色的考虑以及角色的切换-->
+    <select id="findAllRolesByUserId" resultType="com.chaolifang.pojo.Role">
+        select a.* from t_role a
+        inner join t_user_role b on a.id = b.role_id
+        where b.user_id = #{userId}
+    </select>
+
+    <select id="findCurrentRoleByUserId" resultType="com.chaolifang.pojo.Role">
+        select a.* from t_role a
+        inner join t_user_role b on a.id = b.role_id
+        where b.user_id = #{userId} and b.login_role = 1 limit 0,1
+    </select>
+
+    <select id="findAuthByCurrentRole" resultType="com.chaolifang.pojo.Auth">
+        select a.* from t_auth a
+        inner join t_role_auth b on a.id = b.auth_id
+        where b.role_id = #{roleId}
     </select>
 </mapper>

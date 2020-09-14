@@ -31,9 +31,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
         //registry.addInterceptor(authInterceptor).excludePathPatterns(patterns).addPathPatterns("/**"); 这样好像拦截不住,下面的拦截方式是成功的
 
         List<String> patterns = new ArrayList<>();//需要拦截的请求
-        patterns.add("/api/user/test");
+        //patterns.add("/api/user/test");
         patterns.add("/api/book/**");
-        //patterns.add("/api/user/login");
+        patterns.add("/api/menu/**");
         registry.addInterceptor(authInterceptor).addPathPatterns(patterns);
     }
 

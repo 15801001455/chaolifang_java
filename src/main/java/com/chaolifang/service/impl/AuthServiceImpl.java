@@ -1,12 +1,17 @@
 package com.chaolifang.service.impl;
 
+import com.chaolifang.config.context.CurrentAuth;
+import com.chaolifang.config.context.CurrentRole;
 import com.chaolifang.mapper.UserMapper;
+import com.chaolifang.pojo.Auth;
+import com.chaolifang.pojo.Role;
 import com.chaolifang.pojo.User;
 import com.chaolifang.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -58,5 +63,15 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public User findByToken(String token) {
         return userMapper.findByToken(token);
+    }
+
+    @Override
+    public Role findRoleByUserId(Integer userId) {
+        return userMapper.findCurrentRoleByUserId(userId);
+    }
+
+    @Override
+    public List<Auth> findAuthByCurrentRole(Integer roleId) {
+        return userMapper.findAuthByCurrentRole(roleId);
     }
 }

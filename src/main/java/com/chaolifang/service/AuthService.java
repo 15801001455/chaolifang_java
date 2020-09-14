@@ -1,6 +1,14 @@
 package com.chaolifang.service;
 
+import com.chaolifang.config.context.CurrentAuth;
+import com.chaolifang.config.context.CurrentRole;
+import com.chaolifang.dto.BookSearchDTO;
+import com.chaolifang.pojo.Auth;
+import com.chaolifang.pojo.Role;
 import com.chaolifang.pojo.User;
+import com.chaolifang.util.Result;
+
+import java.util.List;
 
 public interface AuthService {
     /**
@@ -29,4 +37,8 @@ public interface AuthService {
      * @return
      */
     User findByToken(String token);
+
+    Role findRoleByUserId(Integer userId);
+
+    List<Auth> findAuthByCurrentRole(Integer roleId);
 }
