@@ -1,7 +1,6 @@
 package com.chaolifang.config;
 
 import com.alibaba.fastjson.JSON;
-import com.chaolifang.config.context.CurrentAuth;
 import com.chaolifang.config.context.CurrentRole;
 import com.chaolifang.config.context.CurrentUserInfo;
 import com.chaolifang.config.context.UserContext;
@@ -10,7 +9,6 @@ import com.chaolifang.pojo.User;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.service.AuthService;
 import com.chaolifang.util.HttpContextUtil;
-import com.chaolifang.util.Result;
 import com.chaolifang.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -24,8 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Component
