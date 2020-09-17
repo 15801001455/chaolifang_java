@@ -12,7 +12,7 @@ import java.util.List;
 public class Result implements Serializable {
 
     // 定义jackson对象
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    /*private static final ObjectMapper MAPPER = new ObjectMapper();
 
     // 响应业务状态
     private Integer status;
@@ -79,7 +79,7 @@ public class Result implements Serializable {
         this.data = data;
     }
 
-    /**
+    *//**
      * 将json结果集转化为Result对象
      *
      * @param jsonData
@@ -87,7 +87,7 @@ public class Result implements Serializable {
      * @param clazz
      *            TaotaoResult中的object类型
      * @return
-     */
+     *//*
     public static Result formatToPojo(String jsonData, Class<?> clazz) {
         try {
             if (clazz == null) {
@@ -109,12 +109,12 @@ public class Result implements Serializable {
         }
     }
 
-    /**
+    *//**
      * 没有object对象的转化
      *
      * @param json
      * @return
-     */
+     *//*
     public static Result format(String json) {
         try {
             return MAPPER.readValue(json, Result.class);
@@ -124,7 +124,7 @@ public class Result implements Serializable {
         return null;
     }
 
-    /**
+    *//**
      * Object是集合转化
      *
      * @param jsonData  传的是Result的对象的Json字符串
@@ -132,7 +132,7 @@ public class Result implements Serializable {
      * @param clazz
      *            集合中的类型
      * @return
-     */
+     *//*
     public static Result formatToList(String jsonData, Class<?> clazz) {
         try {
             JsonNode jsonNode = MAPPER.readTree(jsonData);
@@ -146,6 +146,6 @@ public class Result implements Serializable {
         } catch (Exception e) {
             return null;
         }
-    }
+    }*/
 
 }

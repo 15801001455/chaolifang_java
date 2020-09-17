@@ -7,6 +7,7 @@ import com.chaolifang.config.context.CurrentUserInfo;
 import com.chaolifang.config.context.UserContext;
 import com.chaolifang.pojo.Role;
 import com.chaolifang.pojo.User;
+import com.chaolifang.result.BaseResult;
 import com.chaolifang.service.AuthService;
 import com.chaolifang.util.HttpContextUtil;
 import com.chaolifang.util.Result;
@@ -43,24 +44,25 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (handler instanceof HandlerMethod) {
             String token = TokenUtil.getRequestToken(request);
             if (StringUtils.isBlank(token)) {
-                //setReturn(response, 400, "用户未登录，请先登录");
+                setReturn(response, "用户未登录，请先登录");
                 return false;
             }
             //1. 根据token，查询用户信息
             User user = authService.findByToken(token);
             //2. 若用户不存在,
             if (user == null) {
-                //setReturn(response, 400, "用户不存在");
+                setReturn(response, "用户不存在");
                 return false;
             }
             //3. token失效
             if (user.getExpireTime().isBefore(LocalDateTime.now())) {
-                //setReturn(response, 400, "用户登录凭证已失效，请重新登录");
+                setReturn(response, "用户登录凭证已失效，请重新登录");
                 return false;
             }
             //4 用户没有角色应该也不能登录系统
             Role roleByUserId = authService.findRoleByUserId(user.getId());
             if(roleByUserId == null){
+                setReturn(response, "用户无角色信息,请联系管理员");
                 return  false;
             }
             CurrentUserInfo info = new CurrentUserInfo();
@@ -74,15 +76,15 @@ public class AuthInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private static void setReturn(HttpServletResponse response, int status, String msg) throws IOException {
+    private static void setReturn(HttpServletResponse response,String msg) throws IOException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
         httpResponse.setHeader("Access-Control-Allow-Origin", HttpContextUtil.getOrigin());
         httpResponse.setCharacterEncoding("UTF-8");
         httpResponse.setStatus(400);
         response.setContentType("application/json;charset=utf-8");
-        Result build = Result.build(status, msg);
-        String json = JSON.toJSONString(build);
+        BaseResult baseResult = BaseResult.notOk(msg);
+        String json = JSON.toJSONString(baseResult);
         httpResponse.getWriter().print(json);
     }
 }

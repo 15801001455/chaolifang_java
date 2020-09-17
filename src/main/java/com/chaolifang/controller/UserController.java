@@ -56,7 +56,7 @@ public class UserController {
      * @param token
      * @return
      */
-    @GetMapping("/validateToken")
+    /*@GetMapping("/validateToken")
     public BaseResult validateToken(@RequestParam("mytoken") String token){
         if (StringUtils.isBlank(token)) {
             return BaseResult.notOk("用户未登录，请先登录");
@@ -77,7 +77,7 @@ public class UserController {
             return BaseResult.notOk("用户没有角色信息，请联系管理员");
         }
         return BaseResult.ok();
-    }
+    }*/
 
     @GetMapping("/test")
     public BaseResult test(@RequestParam("mytoken") String token){
