@@ -1,6 +1,8 @@
 server:
   port: 8083
 spring:
+  main:
+    lazy-initialization: true
   application:
     name: jta-dbsource
   data:
