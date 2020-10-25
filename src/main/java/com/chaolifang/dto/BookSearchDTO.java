@@ -14,4 +14,6 @@ public class BookSearchDTO {
     private String borrowTimeEndStr;
     private String borrowPerson;
     private Integer borrowStatus;
+    private String id;
+    private String name;
 }
