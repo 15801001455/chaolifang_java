@@ -10,7 +10,7 @@ import java.security.MessageDigest;
 public class EncryptedUtil {
 
     public static void main(String[] args) {
-        String generate = generate("123","jin");
+        String generate = generate("123","cuicui");
         System.out.println(generate);
     }
 

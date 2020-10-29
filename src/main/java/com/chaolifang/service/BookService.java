@@ -86,4 +86,8 @@ public class BookService {
         }
         return BaseResult.notOk("删除失败");
     }
+
+    public List<Book> getUnReturnedBook(){
+        return bookMapper.getUnReturnedBook();
+    }
 }

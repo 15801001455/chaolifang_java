@@ -77,4 +77,7 @@ public interface BookMapper{
 
         @Delete("delete from t_book where id = #{id}")
         Integer deleteById(@Param("id") String id);
+
+        @Select("SELECT * from t_book where borrowStatus = 2 and DATE_FORMAT(returnTime,'%Y-%m-%d') <= DATE_FORMAT(NOW(),'%Y-%m-%d');")
+        List<Book> getUnReturnedBook();
 }

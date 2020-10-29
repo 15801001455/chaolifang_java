@@ -102,6 +102,18 @@ spring:
         reset-enable: true
         login-username: myname
         login-password: mypwd
+  mail:
+    password: 123
+    host: smtp.126.com
+    username: 15801001455@126.com
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
 jasypt:
   encryptor:
     password: PWDSalt
