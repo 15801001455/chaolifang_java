@@ -14,6 +14,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
 import javax.mail.internet.MimeMessage;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,8 @@ import java.util.List;
 @EnableScheduling
 @Lazy(false)
 public class JobController {
+
+    public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd");
 
     @Autowired
     private BookService bookService;
@@ -54,8 +57,15 @@ public class JobController {
         if(unReturnedBook != null && unReturnedBook.size() > 0){
             for(Book book : unReturnedBook){
                 // update jyc 先不发邮件了 让老婆在控制台能看到谁没有还书就行了!!!也不用想方设法隐藏我发邮件的用户名和密码了
-                System.out.println(book.getBorrowPerson());
-                //sendMailTemp();
+                String id = book.getId();
+                String name = book.getName();
+                String borrowPerson = book.getBorrowPerson();
+                Date borrowTime = book.getBorrowTime();
+                Date returnTime = book.getReturnTime();
+                System.out.println("***************************************未归还图书人员列表*************************************************");
+                String content = String.format("图书编号:" + id + ",图书名称：" + name + ",借阅人:" + borrowPerson + ",借阅时间:" + sdf.format(borrowTime) + ",应该归还时间:" + sdf.format(returnTime));
+                System.out.println(content);
+                System.out.println("******************************************************************************************************");
             }
         }
     }
