@@ -51,7 +51,7 @@ public class JobController {
     }
 
     //@Scheduled(cron = "0 0 8 * * ?") //正式环境 每天8点发送
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void sendMailDelayReturnBook(){
         List<Book> unReturnedBook = bookService.getUnReturnedBook();
         if(unReturnedBook != null && unReturnedBook.size() > 0){

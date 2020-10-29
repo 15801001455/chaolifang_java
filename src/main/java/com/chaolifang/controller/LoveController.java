@@ -32,18 +32,8 @@ import java.util.List;
 @Lazy(false)
 public class LoveController {
 
-    /**
-     * update jyc 必须加这个Bean 否则EnableScheduling是单线程的,会串行化阻塞
-     * @return
-     */
-    @Bean
-    public TaskScheduler taskScheduler() {
-        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-        taskScheduler.setPoolSize(50);
-        return taskScheduler;
-    }
-
     @Scheduled(cron = "0 0 8 * * ?")
+    //@Scheduled(cron = "0 0/1 * * * ?")
     public void one1(){
         System.out.println("好好工作,每天好心情~");
     }
