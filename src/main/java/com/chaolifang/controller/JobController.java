@@ -18,6 +18,13 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * springboot集成的定时任务注意4个地方
+ * 1)@EnableScheduling
+ * 2)@Lazy(false)
+ * 3)public TaskScheduler taskScheduler() 这个类确保多线程并发执行
+ * 4)@Scheduled(cron = "0 0/1 * * * ?")
+ */
 @Component
 @EnableScheduling
 @Lazy(false)
