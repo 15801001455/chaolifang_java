@@ -62,7 +62,14 @@ public class JobController {
                 String borrowPerson = book.getBorrowPerson();
                 Date borrowTime = book.getBorrowTime();
                 Date returnTime = book.getReturnTime();
-                System.out.println("***************************************未归还图书人员列表*************************************************");
+                // 在线banner生成器 http://www.network-science.de/ascii/
+                System.out.println("   ____   __                                        __          __         \n" +
+                        "   /  _/  / /___ _   _____     __  ______  __  __   / /_  ____ _/ /_  __  __\n" +
+                        "   / /   / / __ \\ | / / _ \\   / / / / __ \\/ / / /  / __ \\/ __ `/ __ \\/ / / /\n" +
+                        " _/ /   / / /_/ / |/ /  __/  / /_/ / /_/ / /_/ /  / /_/ / /_/ / /_/ / /_/ / \n" +
+                        "/___/  /_/\\____/|___/\\___/   \\__, /\\____/\\__,_/  /_.___/\\__,_/_.___/\\__, /  \n" +
+                        "                            /____/                                 /____/   ");
+                System.out.println("***************************************老婆,请注意了，这些老师还没还书呢*************************************************");
                 String content = String.format("图书编号:" + id + ",图书名称：" + name + ",借阅人:" + borrowPerson + ",借阅时间:" + sdf.format(borrowTime) + ",应该归还时间:" + sdf.format(returnTime));
                 System.out.println(content);
                 System.out.println("******************************************************************************************************");

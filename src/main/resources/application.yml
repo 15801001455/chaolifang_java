@@ -119,3 +119,6 @@ jasypt:
     password: PWDSalt
 mybatis:
   type-aliases-package: com.chaolifang.domain # 这个配置是为了Mapper文件中的自定义实体不用写完整包名+类名称
+logging:
+  level:
+    root: error
