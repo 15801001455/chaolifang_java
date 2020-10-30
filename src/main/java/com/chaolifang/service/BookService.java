@@ -1,11 +1,14 @@
 package com.chaolifang.service;
 import com.chaolifang.dto.BookSearchDTO;
 import com.chaolifang.enuma.BorrowStatusEnum;
+import com.chaolifang.mapper.BookLogMapper;
 import com.chaolifang.mapper.BookMapper;
 import com.chaolifang.pojo.Book;
+import com.chaolifang.pojo.BookLog;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.util.ToolDate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,9 @@ public class BookService {
 
     @Autowired
     private BookMapper bookMapper;
+
+    @Autowired
+    private BookLogMapper bookLogMapper;
 
     // 目前先不带查询条件
     public DataTablesResult getBookList(BookSearchDTO searchDTO) {
@@ -37,6 +43,14 @@ public class BookService {
         List<Book> list = bookMapper.getBookManagerList(searchDTO);
         DataTablesResult result = new DataTablesResult();
         result.setRecordsTotal(count);
+        result.setData(list);
+        result.setResult("ok");
+        return result;
+    }
+
+    public BaseResult getBookLogList(String id) {
+        List<BookLog> list = bookLogMapper.selectById(id);
+        BaseResult result = new BaseResult();
         result.setData(list);
         result.setResult("ok");
         return result;
@@ -62,6 +76,10 @@ public class BookService {
         }
         dto.setUpdateTime(new Date());
         Integer count = bookMapper.updateById(dto);
+        BookLog bookLog = new BookLog();
+        BeanUtils.copyProperties(dto,bookLog);
+        //增加日志,后期前台显示用
+        bookLogMapper.insert(bookLog);
         if (count >= 0) {
             return BaseResult.ok();
         }

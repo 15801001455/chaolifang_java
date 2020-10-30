@@ -7,6 +7,7 @@ import com.chaolifang.pojo.Book;
 import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.service.BookService;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -23,6 +24,11 @@ public class BookController {
         return bookService.getBookList(searchDTO);
     }
 
+    @RequestMapping(value = "/getBookLogList",method = RequestMethod.GET)
+    public BaseResult getBookLogList(@RequestParam String id){
+        return bookService.getBookLogList(id);
+    }
+
     @Transactional
     @RequestMapping(value = "/addBook",method = RequestMethod.POST)
     public BaseResult addBook(@RequestBody Book dto){
@@ -33,6 +39,7 @@ public class BookController {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return BaseResult.notOk(e.getMessage());
         }
+
     }
 
     @RequestMapping(value = "/updateBook",method = RequestMethod.POST)
