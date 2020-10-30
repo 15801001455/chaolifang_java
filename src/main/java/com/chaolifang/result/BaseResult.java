@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-@ApiModel(value = "返回类")
+@ApiModel(value = "BaseResult")
 public class BaseResult<T> implements Serializable {
     public static final String RESULT_OK = "ok";
     public static final String RESULT_NOT_OK = "not_ok";

@@ -9,6 +9,7 @@ import com.chaolifang.result.BaseResult;
 import com.chaolifang.result.DataTablesResult;
 import com.chaolifang.service.BookService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -35,6 +36,7 @@ public class BookController {
 
     @Transactional
     @RequestMapping(value = "/addBook", method = RequestMethod.POST)
+    @ApiOperation(value = "添加书籍",notes = "添加书籍")
     public BaseResult<String> addBook(@RequestBody Book dto) {
         CurrentUserInfo user = UserContext.getUser();//这行就是测试拦截器里能否为需要登录的用户设置上当前的用户信息
         try {
