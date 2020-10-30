@@ -121,4 +121,11 @@ mybatis:
   type-aliases-package: com.chaolifang.domain # 这个配置是为了Mapper文件中的自定义实体不用写完整包名+类名称
 logging:
   level:
-    root: error
+    root: warn
+# ===== 自定义swagger配置 ===== #
+swagger:
+  enable: true
+  application-name: ${spring.application.name}
+  application-version: 1.0
+  application-description: springfox
+  try-host: http://localhost:${server.port}

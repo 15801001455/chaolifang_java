@@ -24,14 +24,14 @@ public class UserController {
     private AuthService authService;
 
     @GetMapping("/logout")
-    public BaseResult logout(HttpServletRequest request){
+    public BaseResult<String> logout(HttpServletRequest request){
         //从request中取出token
         String token = TokenUtil.getRequestToken(request);
         authService.logout(token);
         return BaseResult.ok();
     }
     @PostMapping("/login")
-    public BaseResult login(@RequestBody LoginDTO loginDTO){
+    public BaseResult<String> login(@RequestBody LoginDTO loginDTO){
         String username = loginDTO.getUsername();
         String password = loginDTO.getPassword();
         //用户信息
@@ -80,7 +80,7 @@ public class UserController {
     }*/
 
     @GetMapping("/test")
-    public BaseResult test(@RequestParam("mytoken") String token){
+    public BaseResult<String> test(@RequestParam("mytoken") String token){
         return BaseResult.ok("恭喜你,验证通过了，我可以返回数据给你");
     }
 }

@@ -1,4 +1,6 @@
 package com.chaolifang.result;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -6,13 +8,16 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class BaseResult implements Serializable {
+@ApiModel(value = "返回类")
+public class BaseResult<T> implements Serializable {
     public static final String RESULT_OK = "ok";
     public static final String RESULT_NOT_OK = "not_ok";
     public static final String MESSAGE = "成功操作";
-
+    @ApiModelProperty(value = "result")
     private String result;
-    private Object data;
+    @ApiModelProperty(value = "data")
+    private T data;
+    @ApiModelProperty(value = "message")
     private String message;
 
     public static BaseResult ok(Object data) {

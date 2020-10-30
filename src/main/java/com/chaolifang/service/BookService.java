@@ -26,7 +26,7 @@ public class BookService {
     private BookLogMapper bookLogMapper;
 
     // 目前先不带查询条件
-    public DataTablesResult getBookList(BookSearchDTO searchDTO) {
+    public DataTablesResult<List<Book>> getBookList(BookSearchDTO searchDTO) {
         Integer pageIndex = searchDTO.getPageIndex() == null ? 1 : searchDTO.getPageIndex();
         Integer pageSize = searchDTO.getPageSize() == null ? 10 : searchDTO.getPageSize();
         searchDTO.setPageIndex((pageIndex - 1) * pageSize); // mysql中是起始的行是多少行
@@ -41,14 +41,14 @@ public class BookService {
         }
         Integer count = bookMapper.getBookManagerCount(searchDTO);
         List<Book> list = bookMapper.getBookManagerList(searchDTO);
-        DataTablesResult result = new DataTablesResult();
+        DataTablesResult<List<Book>> result = new DataTablesResult();
         result.setRecordsTotal(count);
         result.setData(list);
         result.setResult("ok");
         return result;
     }
 
-    public BaseResult getBookLogList(String id) {
+    public BaseResult<List<BookLog>> getBookLogList(String id) {
         List<BookLog> list = bookLogMapper.selectById(id);
         BaseResult result = new BaseResult();
         result.setData(list);
@@ -56,7 +56,7 @@ public class BookService {
         return result;
     }
 
-    public BaseResult addBook(Book dto) {
+    public BaseResult<String> addBook(Book dto) {
         Book book = bookMapper.selectById(dto.getId());
         if (book != null) {
             return BaseResult.notOk("书籍编号重复");
@@ -69,7 +69,7 @@ public class BookService {
         return BaseResult.notOk("新增书籍失败");
     }
 
-    public BaseResult updateBook(Book dto) {
+    public BaseResult<String> updateBook(Book dto) {
         Book book = bookMapper.selectById(dto.getId());
         if (book == null) {
             return BaseResult.notOk("书籍编号不存在");
@@ -86,7 +86,7 @@ public class BookService {
         return BaseResult.notOk("保存书籍失败");
     }
 
-    public BaseResult deleteBook(String id) {
+    public BaseResult<String> deleteBook(String id) {
         Book book = bookMapper.selectById(id);
         if (book == null) {
             return BaseResult.notOk("书籍不存在");

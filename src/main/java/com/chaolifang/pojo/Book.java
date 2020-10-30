@@ -1,6 +1,7 @@
 package com.chaolifang.pojo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import java.util.Date;
 
 @Data
 @ToString
+@ApiModel(value = "书籍实体")
 public class Book {
     @ApiModelProperty(value = "书籍编号")
     private String id;//书籍编号
