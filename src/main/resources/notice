@@ -131,7 +131,20 @@ CREATE TABLE `t_book_log` (
   `borrowPerson` varchar(100) DEFAULT NULL,
   `borrowStatus` int(2) DEFAULT NULL,
   `mark` text,
+  `insertTime` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `bookmanager` (
+  `id` varchar(10) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `borrowTime` datetime DEFAULT NULL,
+  `returnTime` datetime DEFAULT NULL,
+  `borrowPerson` varchar(100) DEFAULT NULL,
+  `borrowStatus` int(2) DEFAULT NULL,
+  `mark` text,
   `insertTime` datetime DEFAULT NULL,
+  `updateTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ----------------------------------------------------------------------------------------
 swagger3的访问地址:
