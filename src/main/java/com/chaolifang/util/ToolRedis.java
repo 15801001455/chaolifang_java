@@ -43,4 +43,60 @@ public class ToolRedis {
         return false;
     }*/
 
+    /**
+     * 房天下业务代码实验
+     * //审核定金合同
+     *     public ApiResult auditDeposit(DepositMaterialSaveDTO dto, CurrentUserInfoDTO currentUser) {
+     *         String contractId = dto.getContractId();
+     *         if (ToolStr.isSpace(contractId)) {
+     *             return ResultGenerator.fail("没有合同号");
+     *         }
+     *         ContractDeposit contractDepositDB = getContractDepositDB(contractId);
+     *         if(contractDepositDB == null){
+     *             return ResultGenerator.fail("没找到合同");
+     *         }
+     *         Integer depositStatus = contractDepositDB.getDepositStatus();
+     *         if(depositStatus != EnumDepositStatus.待上传备件.getIndex()){
+     *             return ResultGenerator.fail("流程错误");
+     *         }
+     *         String requestRandom = UUID.randomUUID().toString();
+     *         String lockKey = "auditDepositBackup:"+contractId;
+     *         boolean lock = redis.tryGetLock(lockKey, requestRandom, 10);
+     *         if(lock){
+     *             try{
+     *                 Map<String, Object> paramsMap = new HashMap<>();//todo
+     *                 //发起oa申请 todo
+     *                 OAResult result = oaApprovalService.startOAApproval(ToolJson.mapToJson(paramsMap), "dto.getFileFild()", "key", "workflowcode", "", currentUser.getUserID());
+     *                 if (!result.getCode().equals("1")) {
+     *                     return ResultGenerator.fail("发起OA审批异常:" + result.getMessage().toString());
+     *                 }
+     *                 Approval_OA approvalOA = new Approval_OA();
+     *                 String requestID = result.getMessage().toString();
+     *                 approvalOA.setRequestId(requestID);
+     *                 approvalOA.setOrderId(contractId);
+     *                 approvalOA.setCity(contractDepositDB.getCity());
+     *                 approvalOA.setOrderStatusBefore(EnumDepositStatus.待上传备件.getIndex());
+     *                 approvalOA.setApprovalType(EnumApprovalType.定金合同审批.getIndex());
+     *                 approvalOA.setApprovalSubType(null);
+     *                 approvalOA.setFlowStatus(EnumApprovalFlowStatus.Approvaling.getIndex());
+     *                 approvalOA.setFormFileds(ToolJson.mapToJson(paramsMap));
+     *                 approvalOA.setFileFilds("dto.getFileFild()");//todo
+     *                 approvalOA.setCreateTime(new Date());
+     *                 approvalOA.setApplicantOAId(currentUser.getUserID() == null ? 0 : currentUser.getUserID());
+     *                 approvalOA.setApplicantRealName(currentUser == null ? "" : currentUser.getRealName());
+     *                 approvalOaDao.insert(approvalOA);
+     *                 //变状态
+     *                 contractDepositDB.setDepositStatus(EnumDepositStatus.待审核.getIndex());
+     *                 contractDepositDB.setUpdateTime(new Date());
+     *                 contractDepositDao.updateById(contractDepositDB);
+     *             }finally {
+     *                 redis.releaseLock(lockKey,requestRandom);
+     *             }
+     *             return ResultGenerator.successful();
+     *         }else{
+     *             redis.releaseLock(lockKey,requestRandom);
+     *             return ResultGenerator.fail("请勿频繁操作");
+     *         }
+     *     }
+     */
 }
